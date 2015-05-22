@@ -1,0 +1,10 @@
+FILE(REMOVE_RECURSE
+  "CMakeFiles/ballencoder.dir/ballred.cc.o"
+  "libballencoder.pdb"
+  "libballencoder.so"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/ballencoder.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

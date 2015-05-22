@@ -1,0 +1,10 @@
+FILE(REMOVE_RECURSE
+  "CMakeFiles/poseneckspeed.dir/poseneckspeed.cc.o"
+  "libposeneckspeed.pdb"
+  "libposeneckspeed.so"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/poseneckspeed.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)
