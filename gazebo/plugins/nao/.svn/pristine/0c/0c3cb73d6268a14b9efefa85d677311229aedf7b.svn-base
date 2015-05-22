@@ -1,0 +1,10 @@
+FILE(REMOVE_RECURSE
+  "CMakeFiles/poselefthip.dir/poselefthip.cc.o"
+  "libposelefthip.pdb"
+  "libposelefthip.so"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/poselefthip.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

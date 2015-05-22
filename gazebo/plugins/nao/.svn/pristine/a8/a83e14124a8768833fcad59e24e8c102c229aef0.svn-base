@@ -1,0 +1,10 @@
+FILE(REMOVE_RECURSE
+  "CMakeFiles/poserightshoulder.dir/poserightshoulder.cc.o"
+  "libposerightshoulder.pdb"
+  "libposerightshoulder.so"
+)
+
+# Per-language clean rules from dependency scanning.
+FOREACH(lang CXX)
+  INCLUDE(CMakeFiles/poserightshoulder.dir/cmake_clean_${lang}.cmake OPTIONAL)
+ENDFOREACH(lang)

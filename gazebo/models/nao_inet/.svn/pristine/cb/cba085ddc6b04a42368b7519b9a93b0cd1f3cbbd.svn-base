@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<model>
+  <name>nao_inet</name>
+  <version>1.0</version>
+  <sdf version="1.3">model.sdf</sdf>
+
+  <author>
+    <name>Francisco Perez</name>
+    <email>f.perez475@gmail.com</email>
+  </author>
+
+  <description>
+    A model of the Nao
+  </description>
+
+</model>
