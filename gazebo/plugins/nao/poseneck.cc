@@ -110,21 +110,21 @@ namespace gazebo {
        
         pthread_mutex_lock(&this->mutex_neckmotors);
         
-        float panSpeed =  this->neck.motorsdata.pan - this->neck.encoders.pan;
+        double panSpeed =  this->neck.motorsdata.pan - this->neck.encoders.pan;
         if ((std::abs(panSpeed) < 0.1) && (std::abs(panSpeed) > 0.001))
             panSpeed = 0.1;
         
-        float tiltSpeed =  this->neck.motorsdata.tilt - this->neck.encoders.tilt;
+        double tiltSpeed =  this->neck.motorsdata.tilt - this->neck.encoders.tilt;
         if ((std::abs(tiltSpeed) < 0.1) && (std::abs(tiltSpeed) > 0.001))
             tiltSpeed = 0.1;
 
 
 
-        //this->neck.joint_pan->SetParam("vel",0, panSpeed);
-        //this->neck.joint_tilt->SetParam("vel",0, tiltSpeed);
+        this->neck.joint_pan->SetParam("vel",0, panSpeed);
+        this->neck.joint_tilt->SetParam("vel",0, tiltSpeed);
 
-	this->neck.joint_pan->SetPosition(0, this->neck.motorsdata.pan);
-	this->neck.joint_tilt->SetPosition(0, this->neck.motorsdata.tilt);
+	//this->neck.joint_pan->SetPosition(0, this->neck.motorsdata.pan);
+	//this->neck.joint_tilt->SetPosition(0, this->neck.motorsdata.tilt);
 
         pthread_mutex_unlock(&this->mutex_neckmotors);
 

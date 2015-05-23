@@ -105,19 +105,19 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_leftshouldermotors);
         
-        float pitchSpeed =  this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt;
+        double pitchSpeed =  this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt;
         if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
             pitchSpeed = 0.1;
         
-        float rollSpeed =  this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll;
+        double rollSpeed =  this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll;
         if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
             rollSpeed = 0.1;
         
-        //this->leftshoulder.joint_pitch->SetParam("vel",0, pitchSpeed);
-        //this->leftshoulder.joint_roll->SetParam("vel",0, rollSpeed);
+        this->leftshoulder.joint_pitch->SetParam("vel",0, pitchSpeed);
+        this->leftshoulder.joint_roll->SetParam("vel",0, rollSpeed);
 
-        this->leftshoulder.joint_pitch->SetPosition(0, 0);
-        this->leftshoulder.joint_roll->SetPosition(0, 0);
+        //this->leftshoulder.joint_pitch->SetPosition(0, 0);
+        //this->leftshoulder.joint_roll->SetPosition(0, 0);
 
 
         pthread_mutex_unlock(&this->mutex_leftshouldermotors);

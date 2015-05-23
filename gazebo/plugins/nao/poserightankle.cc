@@ -110,20 +110,25 @@ namespace gazebo {
         pthread_mutex_lock(&this->mutex_rightanklemotors);
         
         double pitchSpeed =  this->rightankle.motorsdata.tilt - this->rightankle.encoders.tilt;
-        if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-            pitchSpeed = 0.1;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+          //  pitchSpeed = 0.0;
         
         double rollSpeed =  this->rightankle.motorsdata.roll - this->rightankle.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.0;
 		
 		// Checking joint limits, avoiding weird behaviours
 		if ((this->rightankle.motorsdata.roll >= maxRoll) || (this->rightankle.motorsdata.roll <= minRoll)) 
-			rollSpeed = 0.0;
+			rollSpeed = 0.0000000;
 
-		if ((this->rightankle.motorsdata.tilt >= maxPitch) || (this->rightankle.motorsdata.tilt <= minPitch)) {
-			pitchSpeed = 0.0;        
-		}
+		if ((this->rightankle.motorsdata.tilt >= maxPitch) || (this->rightankle.motorsdata.tilt <= minPitch)) 
+			pitchSpeed = 0.000000;        
+		
+
+//std::cout << "goal " << this->rightankle.motorsdata.tilt << " (" << this->rightankle.motorsdata.tilt*180/M_PI << " DEG)"<<std::endl;
+//std::cout << "angle " << this->rightankle.joint_pitch->GetAngle(0).Radian() << "("<< this->rightankle.joint_pitch->GetAngle(0).Degree() << " DEG)"<< std::endl;
+//std::cout << "speed " << pitchSpeed << " (" << pitchSpeed*180/M_PI <<  " DEG)"<< std::endl;
+//std::cout << "-------------------------------" << std::endl;
 
         this->rightankle.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->rightankle.joint_roll->SetParam("vel",0, rollSpeed);

@@ -61,7 +61,7 @@ namespace gazebo {
         this->righthip.joint_pitch = _model->GetJoint(elemPitch);
         this->righthip.joint_roll = _model->GetJoint(elemRoll);
 
-        this->maxYaw = (float) this->righthip.joint_yaw->GetUpperLimit(0).Radian();
+       	this->maxYaw = (float) this->righthip.joint_yaw->GetUpperLimit(0).Radian();
         this->minYaw = (float) this->righthip.joint_yaw->GetLowerLimit(0).Radian();
         this->maxPitch = (float) this->righthip.joint_pitch->GetUpperLimit(0).Radian();
         this->minPitch = (float) this->righthip.joint_pitch->GetLowerLimit(0).Radian();
@@ -112,23 +112,36 @@ namespace gazebo {
         pthread_mutex_unlock(&this->mutex_righthipencoders);
 
         //          ----------MOTORS----------
-        this->righthip.joint_yaw->SetParam("fmax",0, 5.0/*this->stiffness*/);
-        this->righthip.joint_pitch->SetParam("fmax",0, 5.0/*this->stiffness*/);
-        this->righthip.joint_roll->SetParam("fmax",0, 5.0/*this->stiffness*/);
+        this->righthip.joint_yaw->SetParam("fmax",0, this->stiffness);
+        this->righthip.joint_pitch->SetParam("fmax",0, this->stiffness);
+        this->righthip.joint_roll->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_righthipmotors);
         
         double yawSpeed =  this->righthip.motorsdata.pan - this->righthip.encoders.pan;
-        if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
-            yawSpeed = 0.1;
+        //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
+        //    yawSpeed = 0.1;
         
         double pitchSpeed =  this->righthip.motorsdata.tilt - this->righthip.encoders.tilt;
-        if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-            pitchSpeed = 0.1;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
             
         double rollSpeed =  this->righthip.motorsdata.roll - this->righthip.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
+
+	if ((this->righthip.motorsdata.pan >= maxYaw) || (this->righthip.motorsdata.pan <= minYaw))
+			yawSpeed = 0.0;
+	if ((this->righthip.motorsdata.tilt >= maxPitch) || (this->righthip.motorsdata.tilt <= minPitch))
+			pitchSpeed = 0.0;
+	if ((this->righthip.motorsdata.roll >= maxRoll) || (this->righthip.motorsdata.roll <= minRoll))
+			rollSpeed = 0.0;
+
+
+//std::cout << "goal " << this->righthip.motorsdata.pan*180/M_PI << " (" <<  this->righthip.motorsdata.pan*180/M_PI<< ")" << std::endl;
+//std::cout << "angle " << this->righthip.joint_yaw->GetAngle(0).Radian() << " (" <<  this->righthip.joint_yaw->GetAngle(0).Degree() << ")" << std::endl;
+//std::cout << "speed " << yawSpeed << " (" << pitchSpeed*180/M_PI << ")" << std::endl;
+//std::cout << "-------------------------------" << std::endl;
         
         this->righthip.joint_yaw->SetParam("vel",0, yawSpeed);
         this->righthip.joint_pitch->SetParam("vel",0, pitchSpeed);
