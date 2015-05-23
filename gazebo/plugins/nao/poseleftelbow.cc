@@ -106,19 +106,19 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_leftelbowmotors);
         
-        float yawSpeed =  this->leftelbow.motorsdata.pan - this->leftelbow.encoders.pan;
+        double yawSpeed =  this->leftelbow.motorsdata.pan - this->leftelbow.encoders.pan;
         if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
             yawSpeed = 0.1;
         
-        float rollSpeed =  this->leftelbow.motorsdata.roll - this->leftelbow.encoders.roll;
+        double rollSpeed =  this->leftelbow.motorsdata.roll - this->leftelbow.encoders.roll;
         if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
             rollSpeed = 0.1;
         
-        //this->leftelbow.joint_yaw->SetParam("vel",0, yawSpeed);
-        //this->leftelbow.joint_roll->SetParam("vel",0, rollSpeed);
+        this->leftelbow.joint_yaw->SetParam("vel",0, yawSpeed);
+        this->leftelbow.joint_roll->SetParam("vel",0, rollSpeed);
 	
-	this->leftelbow.joint_yaw->SetPosition(0, 0);
-	this->leftelbow.joint_roll->SetPosition(0, 0);
+	//this->leftelbow.joint_yaw->SetPosition(0, 0);
+	//this->leftelbow.joint_roll->SetPosition(0, 0);
 
         pthread_mutex_unlock(&this->mutex_leftelbowmotors);
 

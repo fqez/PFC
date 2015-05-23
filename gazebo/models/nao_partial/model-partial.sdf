@@ -4,8 +4,220 @@
 		<pose>0 0 0.335 0 0 0</pose>
 
 
+
+<!--
+*****************************************************************************
+*********************************** BASE ************************************ 
+*****************************************************************************-->
+
+		<link name='base_link'>
+			<self_collide>false</self_collide>
+			<gravity>true</gravity>
+			<pose>0 0 0 0 -0 0</pose>
+			<inertial>
+				<pose>-0.00413 0 0.04342 0 -0 0</pose>
+				<mass>1.04956</mass>
+				<inertia>
+					<ixx>0.00506234</ixx>
+					<ixy>1.43116e-05</ixy>
+					<ixz>0.000155191</ixz>
+					<iyy>0.00488014</iyy>
+					<iyz>-2.70793e-05</iyz>
+					<izz>0.0016103</izz>
+				</inertia>
+			</inertial>
+			<!--<sensor name='imu_sensor' type='imu'>
+				<always_on>true</always_on>
+				<update_rate>30.0</update_rate>
+				<imu>
+					<noise>
+						<type>gaussian</type>
+						<rate>
+							<mean>0</mean>
+							<stddev>0.0002</stddev>
+							<bias_mean>7.5e-06</bias_mean>
+							<bias_stddev>8e-07</bias_stddev>
+						</rate>
+						<accel>
+							<mean>0</mean>
+							<stddev>0.017</stddev>
+							<bias_mean>0.1</bias_mean>
+							<bias_stddev>0.001</bias_stddev>
+						</accel>
+					</noise>
+				</imu>
+			</sensor>-->
+			<collision name='base_link_collision_torso'>
+				<pose>0 0 0 0 -0 0</pose>
+				<surface>
+					<friction>
+						<ode>
+            				<mu>0.5</mu>
+            				<mu2>0.5</mu2>
+          				</ode>
+					</friction>
+				</surface>
+				<geometry>
+					<mesh>
+						<scale>0.1 0.1 0.1</scale>
+						<uri>model://nao_partial/meshes/V40/collision/Torso.stl</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name='base_link_visual_torso'>
+				<pose>0 0 0 0 -0 0</pose>
+				<geometry>
+					<mesh>
+						<scale>0.1 0.1 0.1</scale>
+						<uri>model://nao_partial/meshes/V40/visual/Torso.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+			<!--<velocity_decay>
+				<linear>0</linear>
+				<angular>0</angular>
+			</velocity_decay>-->
+			
+		</link>
+
+-->
+<!--
+*****************************************************************************
+******************************** RIGHT LEG ********************************** 
+*****************************************************************************-->
+
+<!--***********************************************************************-->		<!-- RIGHT HIP YAW/PITCH JOINT -->
+<joint name='RHipYawPitch' type='revolute'>
+	<child>RHipYawPitchLink</child>
+	<parent>base_link</parent>
+	<axis>
+		<xyz>0 0.707107 0.707107</xyz>
+		<limit>
+			<lower>-1.14529</lower>
+			<upper>0.740718</upper>
+			<effort>3.2</effort>
+			<velocity>4.16174</velocity>
+		</limit>
+		<dynamics>
+			<damping>0</damping>
+		</dynamics>
+	</axis>
+</joint>
+<!--***********************************************************************-->
+		<link name='RHipYawPitchLink'>
+			<self_collide>false</self_collide>
+		    <gravity>true</gravity>
+		    <pose>0 -0.05 -0.085 0 -0 0</pose>
+      		<inertial>
+        		<pose>-0.00781 0.01114 0.02661 0 -0 0</pose>
+        		<mass>0.06981</mass>
+        		<inertia>
+          			<ixx>8.9972e-05</ixx>
+			        <ixy>5.00219e-06</ixy>
+			        <ixz>1.27352e-05</ixz>
+			        <iyy>0.000105526</iyy>
+			        <iyz>-2.77008e-05</iyz>
+			        <izz>6.68872e-05</izz>
+	        	</inertia>
+      		</inertial>
+      		<collision name='RHipYawPitchLink_collision'>
+        		<pose>0 0 0 0 -0 0</pose>
+				<surface>
+					<friction>
+						<ode>
+            				<mu>0.5</mu>
+            				<mu2>0.5</mu2>
+          				</ode>
+					</friction>
+				</surface>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/collision/RHipYawPitch.stl</uri>
+          			</mesh>
+        		</geometry>
+      		</collision>
+      		<visual name='RHipYawPitchLink_visual'>
+        		<pose>0 0 0 0 -0 0</pose>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/visual/RHipYawPitch.dae</uri>
+          			</mesh>
+        		</geometry>
+      		</visual>
+      		<velocity_decay>
+        		<linear>0</linear>
+        		<angular>0</angular>
+      		</velocity_decay>
+    	</link>
+<!--***********************************************************************-->			<!-- RIGHT HIP ROLL JOINT -->
+<joint name='RHipRoll' type='revolute'>
+	<child>RHipRollLink</child>
+	<parent>RHipYawPitchLink</parent>
+	<axis>
+		<xyz>1 0 0</xyz>
+		<limit>
+			<lower>-0.79046</lower>
+			<upper>0.379435</upper>
+			<effort>3.2</effort>
+			<velocity>4.16174</velocity>
+		</limit>
+		<dynamics>
+			<damping>0</damping>
+		</dynamics>
+	</axis>
+</joint>
+<!--***********************************************************************-->
+		<link name='RHipRollLink'>
+			<self_collide>false</self_collide>
+      		<gravity>true</gravity>
+      		<pose>0 -0.05 -0.085 0 -0 0</pose>
+      		<inertial>
+        		<pose>-0.01549 -0.00029 -0.00515 0 -0 0</pose>
+        		<mass>0.13053</mass>
+        		<inertia>
+          			<ixx>2.75865e-05</ixx>
+          			<ixy>-1.919e-08</ixy>
+          			<ixz>-4.10822e-06</ixz>
+          			<iyy>9.827e-05</iyy>
+          			<iyz>2.51e-09</iyz>
+          			<izz>8.81033e-05</izz>
+        		</inertia>
+      		</inertial>
+      		<collision name='RHipRollLink_collision'>
+        		<pose>0 0 0 0 -0 0</pose>
+				<surface>
+					<friction>
+						<ode>
+            				<mu>0.5</mu>
+            				<mu2>0.5</mu2>
+          				</ode>
+					</friction>
+				</surface>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/collision/RHipRoll.stl</uri>
+          			</mesh>
+        		</geometry>
+      		</collision>
+      		<visual name='RHipRollLink_visual'>
+        		<pose>0 0 0 0 -0 0</pose>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/visual/RHipRoll.dae</uri>
+          			</mesh>
+        		</geometry>
+      		</visual>
+      		<velocity_decay>
+        		<linear>0</linear>
+        		<angular>0</angular>
+      		</velocity_decay>
+    	</link>
 <!--***********************************************************************-->			<!-- RIGHT HIP PITCH JOINT -->
-<!--<joint name='RHipPitch' type='revolute'>
+<joint name='RHipPitch' type='revolute'>
 	<child>RHipPitchLink</child>
 	<parent>RHipRollLink</parent>
 	<axis>
@@ -20,7 +232,7 @@
 			<damping>0</damping>
 		</dynamics>
 	</axis>
-</joint>-->
+</joint>
 <!--***********************************************************************-->
 		<link name='RHipPitchLink'>
 			<self_collide>false</self_collide>
@@ -51,7 +263,7 @@
         		<geometry>
           			<mesh>
 			            <scale>0.1 0.1 0.1</scale>
-			            <uri>model://nao_inet/meshes/V40/collision/RHipPitch.stl</uri>
+			            <uri>model://nao_partial/meshes/V40/collision/RHipPitch.stl</uri>
 		          </mesh>
         		</geometry>
 	      	</collision>
@@ -60,7 +272,7 @@
 		        <geometry>
         		  	<mesh>
        			  		<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/RHipPitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/RHipPitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -83,7 +295,6 @@
         </limit>
         <dynamics>
     	    <damping>0</damping>
-			<friction>1</friction>
     	</dynamics>
 	</axis>
 </joint>
@@ -117,7 +328,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/RKneePitch.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/RKneePitch.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -126,7 +337,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/RKneePitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/RKneePitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -137,6 +348,7 @@
 		</link>
 <!--***********************************************************************-->			<!-- RIGHT ANKLE PITCH JOINT -->
 <joint name='RAnklePitch' type='revolute'>
+	<pose>0 0 0 0 0 0</pose>
 	<child>RAnklePitchLink</child>
  	<parent>RKneePitchLink</parent>
 	<axis>
@@ -199,6 +411,7 @@
 		</link>
 <!--***********************************************************************-->			<!-- RIGHT ANKLE ROLL JOINT -->
 <joint name='RAnkleRoll' type='revolute'>
+	<pose>0 0 0 0 0 0</pose>
 	<child>RAnkleRollLink</child>
 	<parent>RAnklePitchLink</parent>
 	<axis>
@@ -269,17 +482,12 @@
     	</link>
 
 																						<!-- RIGHT LEG PLUGINS -->
-
-	
-	 
-	
-
-		<!--<plugin filename="libposerighthip.so" name="poserighthip">
+		<plugin filename="libposerighthip.so" name="poserighthip">
             <joint_poserighthip_yaw>RHipYawPitch</joint_poserighthip_yaw>
             <joint_poserighthip_roll>RHipRoll</joint_poserighthip_roll>
             <joint_poserighthip_pitch>RHipPitch</joint_poserighthip_pitch>
             <torque>5</torque>
-        </plugin>-->
+        </plugin>
 		<plugin filename="libposerightknee.so" name="poserightknee">
             <joint_poserightknee_pitch>RKneePitch</joint_poserightknee_pitch>
             <torque>5</torque>
@@ -294,15 +502,148 @@
             <joint_poserightankle_roll>RAnkleRoll</joint_poserightankle_roll>
             <torque>5</torque>
         </plugin>-->
+		
+
+
 
 
 <!--
 *****************************************************************************
 *********************************** LEFT LEG ******************************** 
 *****************************************************************************-->
-
+		
+<!--***********************************************************************-->			<!-- LEFT HIP YAW/PITCH JOINT -->
+<joint name='LHipYawPitch' type='revolute'>
+	<child>LHipYawPitchLink</child>
+	<parent>base_link</parent>
+	<axis>
+		<xyz>0 0.707107 -0.707107</xyz>
+		<limit>
+			<lower>-1.14529</lower>
+			<upper>0.740718</upper>
+			<effort>3.2</effort>
+			<velocity>4.16174</velocity>
+		</limit>
+		<dynamics>
+			<damping>0</damping>
+		</dynamics>
+	</axis>
+</joint>
+<!--***********************************************************************-->
+		<link name='LHipYawPitchLink'>
+			<self_collide>false</self_collide>
+      		<gravity>true</gravity>
+      		<pose>0 0.05 -0.085 0 -0 0</pose>
+      		<inertial>
+        		<pose>-0.00781 -0.01114 0.02661 0 -0 0</pose>
+        		<mass>0.06981</mass>
+        			<inertia>
+          				<ixx>8.15023e-05</ixx>
+          				<ixy>-4.99449e-06</ixy>
+          				<ixz>1.27482e-05</ixz>
+          				<iyy>0.000101326</iyy>
+          				<iyz>2.34547e-05</iyz>
+          				<izz>6.26236e-05</izz>
+        			</inertia>
+      		</inertial>
+      		<collision name='LHipYawPitchLink_collision'>
+        		<pose>0 0 0 0 -0 0</pose>
+				<surface>
+					<friction>
+						<ode>
+            				<mu>0.5</mu>
+            				<mu2>0.5</mu2>
+          				</ode>
+					</friction>
+				</surface>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/collision/LHipYawPitch.stl</uri>
+          			</mesh>
+        		</geometry>
+      		</collision>
+      		<visual name='LHipYawPitchLink_visual'>
+        		<pose>0 0 0 0 -0 0</pose>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/visual/LHipYawPitch.dae</uri>
+          			</mesh>
+        		</geometry>
+      		</visual>
+      		<velocity_decay>
+        		<linear>0</linear>
+        		<angular>0</angular>
+      		</velocity_decay>
+    	</link>
+<!--***********************************************************************-->			<!-- LEFT HIP ROLL JOINT -->
+<joint name='LHipRoll' type='revolute'>
+	<child>LHipRollLink</child>
+	<parent>LHipYawPitchLink</parent>
+	<axis>
+		<xyz>1 0 0</xyz>
+		<limit>
+			<lower>-0.379435</lower>
+			<upper>0.79046</upper>
+			<effort>3.2</effort>
+			<velocity>4.16174</velocity>
+		</limit>
+		<dynamics>
+			<damping>0</damping>
+		</dynamics>
+	</axis>
+</joint>
+<!--***********************************************************************-->
+		<link name='LHipRollLink'>
+			<self_collide>false</self_collide>
+      		<gravity>true</gravity>
+      		<pose>0 0.05 -0.085 0 -0 0</pose>
+      		<inertial>
+        		<pose>-0.01549 0.00029 -0.00515 0 -0 0</pose>
+        		<mass>0.13053</mass>
+        		<inertia>
+          			<ixx>2.75835e-05</ixx>
+          			<ixy>-2.233e-08</ixy>
+          			<ixz>-4.08164e-06</ixz>
+          			<iyy>9.82706e-05</iyy>
+          			<iyz>-4.19e-09</iyz>
+          			<izz>8.80997e-05</izz>
+        		</inertia>
+      		</inertial>
+      		<collision name='LHipRollLink_collision'>
+        		<pose>0 0 0 0 -0 0</pose>
+				<surface>
+					<friction>
+						<ode>
+            				<mu>0.5</mu>
+            				<mu2>0.5</mu2>
+          				</ode>
+					</friction>
+				</surface>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/collision/LHipRoll.stl</uri>
+          			</mesh>
+        		</geometry>
+      		</collision>
+      		<visual name='LHipRollLink_visual'>
+        		<pose>0 0 0 0 -0 0</pose>
+        		<geometry>
+          			<mesh>
+            			<scale>0.1 0.1 0.1</scale>
+            			<uri>model://nao_partial/meshes/V40/visual/LHipRoll.dae</uri>
+          			</mesh>
+        		</geometry>
+      		</visual>
+      		<velocity_decay>
+        		<linear>0</linear>
+        		<angular>0</angular>
+      		</velocity_decay>
+    	</link>
 <!--***********************************************************************-->			<!-- LEFT HIP PITCH JOINT -->
-<!--<joint name='LHipPitch' type='revolute'>
+<joint name='LHipPitch' type='revolute'>
 	<child>LHipPitchLink</child>
     <parent>LHipRollLink</parent>
     <axis>
@@ -317,9 +658,10 @@
           <damping>0</damping>
         </dynamics>
 	</axis>
-</joint>-->
+</joint>
 <!--***********************************************************************-->
-		<link name='LHipPitchLink'>
+		
+<link name='LHipPitchLink'>
 			<self_collide>false</self_collide>
       		<gravity>true</gravity>
       		<pose>0 0.05 -0.085 0 -0 0</pose>
@@ -340,7 +682,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LHipPitch.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LHipPitch.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -349,7 +691,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LHipPitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LHipPitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -397,7 +739,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LKneePitch.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LKneePitch.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -406,7 +748,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LKneePitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LKneePitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -462,7 +804,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LAnklePitch.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LAnklePitch.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -471,14 +813,10 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LAnklePitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LAnklePitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
-      		<velocity_decay>
-        		<linear>0</linear>
-        		<angular>0</angular>
-      		</velocity_decay>
     	</link>
 <!--***********************************************************************-->			<!-- LEFT ANKLE ROLL JOINT -->
 <joint name='LAnkleRoll' type='revolute'>
@@ -503,7 +841,7 @@
       		<gravity>true</gravity>
       		<pose>0 0.05 -0.2879 0 -0 0</pose>
       		<inertial>
-        		<pose>0.02542 0.0033 -0.03239 0 -0 0</pose>
+        		<pose>0.02542 0.0033 -0.03239 0 0 0</pose>
         		<mass>0.16184</mass>
         		<inertia>
           			<ixx>0.000269442</ixx>
@@ -536,7 +874,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LAnkleRoll.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LAnkleRoll.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -545,33 +883,29 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LAnkleRoll.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LAnkleRoll.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
-      		<velocity_decay>
-        		<linear>0</linear>
-        		<angular>0</angular>
-      		</velocity_decay>
-      		<sensor name='left_foot_contact' type='contact'>
-        		<always_on>true</always_on>
-        		<update_rate>1000</update_rate>
-        		<contact>
-          			<collision>LAnkleRollLink_collision</collision>
-        		</contact>
-      		</sensor>
+      		
     	</link>
-
-																						<!-- LEFT LEG PLUGINS -->
+																				<!-- LEFT LEG PLUGINS -->
+		<plugin filename="libposelefthip.so" name="poselefthip">
+            <joint_poselefthip_yaw>LHipYawPitch</joint_poselefthip_yaw>
+            <joint_poselefthip_roll>LHipRoll</joint_poselefthip_roll>
+            <joint_poselefthip_pitch>LHipPitch</joint_poselefthip_pitch>
+            <torque>5</torque>
+        </plugin>
+		<plugin filename="libposeleftknee.so" name="poseleftknee">
+            <joint_poseleftknee_pitch>LKneePitch</joint_poseleftknee_pitch>
+            <torque>5</torque>
+        </plugin>
 		<plugin filename="libposeleftankle.so" name="poseleftankle">
             <joint_poseleftankle_pitch>LAnklePitch</joint_poseleftankle_pitch>
             <joint_poseleftankle_roll>LAnkleRoll</joint_poseleftankle_roll>
             <torque>5</torque>
         </plugin> 
-        <plugin filename="libposeleftknee.so" name="poseleftknee">
-            <joint_poseleftknee_pitch>LKneePitch</joint_poseleftknee_pitch>
-            <torque>5</torque>
-        </plugin>
+		
 
 
 	</model>

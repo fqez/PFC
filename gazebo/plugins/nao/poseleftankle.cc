@@ -104,19 +104,31 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_leftanklemotors);
         
-        double tiltSpeed =  this->leftankle.motorsdata.tilt - this->leftankle.encoders.tilt;
-        if ((std::abs(tiltSpeed) < 0.1) && (std::abs(tiltSpeed) > 0.001))
-            tiltSpeed = 0.1;
+        double pitchSpeed =  this->leftankle.motorsdata.tilt - this->leftankle.encoders.tilt;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
         
         double rollSpeed =  this->leftankle.motorsdata.roll - this->leftankle.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
+
+		// Checking joint limits, avoiding weird behaviours
+		if ((this->leftankle.motorsdata.roll >= maxRoll) || (this->leftankle.motorsdata.roll <= minRoll)) 
+			rollSpeed = 0.0000000;
+
+		if ((this->leftankle.motorsdata.tilt >= maxPitch) || (this->leftankle.motorsdata.tilt <= minPitch)) 
+			pitchSpeed = 0.000000;
+
+//std::cout << "goal " << this->leftankle.motorsdata.tilt << " (" << this->leftankle.motorsdata.tilt*180/M_PI << " DEG)"<<std::endl;
+//std::cout << "angle " << this->leftankle.joint_pitch->GetAngle(0).Radian() << "("<< this->leftankle.joint_pitch->GetAngle(0).Degree() << " DEG)"<< std::endl;
+//std::cout << "speed " << pitchSpeed << " (" << pitchSpeed*180/M_PI <<  " DEG)"<< std::endl;
+//std::cout << "-------------------------------" << std::endl; 
         
-        this->leftankle.joint_pitch->SetParam("vel",0, tiltSpeed);
+        this->leftankle.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->leftankle.joint_roll->SetParam("vel",0, rollSpeed);
 
-	//this->leftankle.joint_pitch->SetPosition(0, 0);
-	//this->leftankle.joint_roll->SetPosition(0, 0);
+		//this->leftankle.joint_pitch->SetPosition(0, 0);
+		//this->leftankle.joint_roll->SetPosition(0, 0);
 
         pthread_mutex_unlock(&this->mutex_leftanklemotors);
 

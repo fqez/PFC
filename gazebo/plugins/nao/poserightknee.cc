@@ -94,8 +94,8 @@ namespace gazebo {
         pthread_mutex_lock(&this->mutex_rightkneemotors);
         
         double pitchSpeed =  this->rightknee.motorsdata.tilt - this->rightknee.encoders.tilt;
-        if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-            pitchSpeed = 0.1;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
 
 		if ((this->rightknee.motorsdata.tilt >= maxPitch) || (this->rightknee.motorsdata.tilt <= minPitch))
 			pitchSpeed = 0.0;

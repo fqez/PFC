@@ -88,10 +88,11 @@ namespace gazebo {
         this->lefthip.encoders.pan = 0.0;
         this->lefthip.encoders.tilt = 0.0;
         this->lefthip.encoders.roll = 0.0;
-        
-        this->lefthip.motorsdata.pan = 0.0;
+/*        
+        this->lefthip.motorsdata.pan = 0.0;*/
         this->lefthip.motorsdata.tilt = 0.0;
         this->lefthip.motorsdata.roll = 0.0;
+
     }
 
     void PoseLeftHip::OnUpdate () {
@@ -118,25 +119,52 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_lefthipmotors);
         
-        float yawSpeed =  this->lefthip.motorsdata.pan - this->lefthip.encoders.pan;
-        if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
-            yawSpeed = 0.1;
+        double yawSpeed =  this->lefthip.motorsdata.pan - this->lefthip.encoders.pan;
+        //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
+        //    yawSpeed = 0.1;
         
-        float pitchSpeed =  this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt;
-        if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-            pitchSpeed = 0.1;
+        double pitchSpeed =  this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
             
-        float rollSpeed =  this->lefthip.motorsdata.roll - this->lefthip.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
-        
-        //this->lefthip.joint_yaw->SetParam("vel",0, yawSpeed);
-        //this->lefthip.joint_pitch->SetParam("vel",0, pitchSpeed);
-        //this->lefthip.joint_roll->SetParam("vel",0, rollSpeed);
+        double rollSpeed =  this->lefthip.motorsdata.roll - this->lefthip.encoders.roll;
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
 
-	this->lefthip.joint_roll->SetPosition(0, 0);
-	this->lefthip.joint_yaw->SetPosition(0, 0);
-	this->lefthip.joint_pitch->SetPosition(0, 0);
+	if ((this->lefthip.motorsdata.pan >= maxYaw) || (this->lefthip.motorsdata.pan <= minYaw)) {
+std::cout << "LIMITE SUPERADO" << std::endl;
+			yawSpeed = 0.0000000;
+	}
+	if ((this->lefthip.motorsdata.tilt >= maxPitch) || (this->lefthip.motorsdata.tilt <= minPitch))
+			pitchSpeed = 0.0000000;
+	if ((this->lefthip.motorsdata.roll >= maxRoll) || (this->lefthip.motorsdata.roll <= minRoll))
+			rollSpeed = 0.0000000;
+		
+
+
+std::cout << "goal " << this->lefthip.motorsdata.pan << " (" <<  this->lefthip.motorsdata.pan*180/M_PI<< ")" << std::endl;
+std::cout << "angle " << this->lefthip.joint_yaw->GetAngle(0).Radian() << " (" <<  this->lefthip.joint_yaw->GetAngle(0).Degree() << ")" << std::endl;
+std::cout << "speed " << yawSpeed << " (" << yawSpeed*180/M_PI << ")" << std::endl;
+std::cout << "-------------------------------" << std::endl;
+
+//std::cout << "goal " << this->lefthip.motorsdata.tilt*180/M_PI << " (" <<  this->lefthip.motorsdata.tilt<< ")" << std::endl;
+//std::cout << "angle " << this->lefthip.joint_pitch->GetAngle(0).Degree() << " (" <<  this->lefthip.joint_pitch->GetAngle(0).Radian() << ")" << std::endl;
+//std::cout << "speed " << pitchSpeed*180/M_PI << " (" << pitchSpeed << ")" << std::endl;
+//std::cout << "-------------------------------" << std::endl;
+
+//std::cout << "goal " << this->lefthip.motorsdata.tilt*180/M_PI << " (" <<  this->lefthip.motorsdata.tilt<< ")" << std::endl;
+//std::cout << "angle " << this->lefthip.joint_pitch->GetAngle(0).Degree() << " (" <<  this->lefthip.joint_pitch->GetAngle(0).Radian() << ")" << std::endl;
+//std::cout << "speed " << pitchSpeed*180/M_PI << " (" << pitchSpeed << ")" << std::endl;
+//sstd::cout << "-------------------------------" << std::endl;
+        
+        
+        this->lefthip.joint_yaw->SetParam("vel",0, yawSpeed);
+        this->lefthip.joint_pitch->SetParam("vel",0, pitchSpeed);
+        this->lefthip.joint_roll->SetParam("vel",0, rollSpeed);
+
+	//this->lefthip.joint_roll->SetPosition(0, 0);
+	//this->lefthip.joint_yaw->SetPosition(0, 0);
+	//this->lefthip.joint_pitch->SetPosition(0, 0);
 
         pthread_mutex_unlock(&this->mutex_lefthipmotors);
 

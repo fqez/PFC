@@ -92,10 +92,18 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_leftkneemotors);
         
-        float pitchSpeed =  this->leftknee.motorsdata.tilt - this->leftknee.encoders.tilt;
-        if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-            pitchSpeed = 0.1;
+        double pitchSpeed =  this->leftknee.motorsdata.tilt - this->leftknee.encoders.tilt;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
         
+		if ((this->leftknee.motorsdata.tilt >= maxPitch) || (this->leftknee.motorsdata.tilt <= minPitch))
+			pitchSpeed = 0.0;
+
+//std::cout << "goal " << this->leftknee.motorsdata.tilt*180/M_PI << std::endl;
+//std::cout << "angle " << this->leftknee.joint_pitch->GetAngle(0).Degree() << std::endl;
+//std::cout << "speed " << pitchSpeed*180/M_PI << "/" << pitchSpeed << std::endl;
+//std::cout << "-------------------------------" << std::endl;
+
         this->leftknee.joint_pitch->SetParam("vel",0, pitchSpeed);
 
         //this->leftknee.joint_pitch->SetPosition(0, 0);
