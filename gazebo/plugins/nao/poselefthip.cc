@@ -142,10 +142,10 @@ std::cout << "LIMITE SUPERADO" << std::endl;
 		
 
 
-std::cout << "goal " << this->lefthip.motorsdata.pan << " (" <<  this->lefthip.motorsdata.pan*180/M_PI<< ")" << std::endl;
-std::cout << "angle " << this->lefthip.joint_yaw->GetAngle(0).Radian() << " (" <<  this->lefthip.joint_yaw->GetAngle(0).Degree() << ")" << std::endl;
-std::cout << "speed " << yawSpeed << " (" << yawSpeed*180/M_PI << ")" << std::endl;
-std::cout << "-------------------------------" << std::endl;
+//std::cout << "goal " << this->lefthip.motorsdata.pan << " (" <<  this->lefthip.motorsdata.pan*180/M_PI<< ")" << std::endl;
+//std::cout << "angle " << this->lefthip.joint_yaw->GetAngle(0).Radian() << " (" <<  this->lefthip.joint_yaw->GetAngle(0).Degree() << ")" << std::endl;
+//std::cout << "speed " << yawSpeed << " (" << yawSpeed*180/M_PI << ")" << std::endl;
+//std::cout << "-------------------------------" << std::endl;
 
 //std::cout << "goal " << this->lefthip.motorsdata.tilt*180/M_PI << " (" <<  this->lefthip.motorsdata.tilt<< ")" << std::endl;
 //std::cout << "angle " << this->lefthip.joint_pitch->GetAngle(0).Degree() << " (" <<  this->lefthip.joint_pitch->GetAngle(0).Radian() << ")" << std::endl;
