@@ -88,10 +88,17 @@ namespace gazebo {
         this->lefthip.encoders.pan = 0.0;
         this->lefthip.encoders.tilt = 0.0;
         this->lefthip.encoders.roll = 0.0;
-/*        
-        this->lefthip.motorsdata.pan = 0.0;*/
+        
+        this->lefthip.motorsdata.pan = 0.0;
         this->lefthip.motorsdata.tilt = 0.0;
         this->lefthip.motorsdata.roll = 0.0;
+
+	this->error_pan = 0.0;
+	this->error_tilt = 0.0;
+	this->error_roll = 0.0;
+	this->error_pan_ant = 0.0;
+	this->error_tilt_ant = 0.0;
+	this->error_roll_ant = 0.0;
 
     }
 
@@ -118,16 +125,21 @@ namespace gazebo {
         this->lefthip.joint_roll->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_lefthipmotors);
+
+	//this->error_pan = this->lefthip.motorsdata.pan - this->lefthip.encoders.pan;
+	this->error_tilt = this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt;
+	this->error_roll = this->lefthip.motorsdata.roll - this->lefthip.encoders.roll;
+
         
         double yawSpeed =  this->lefthip.motorsdata.pan - this->lefthip.encoders.pan;
         //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
         //    yawSpeed = 0.1;
         
-        double pitchSpeed =  this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt;
+        double pitchSpeed =  5*(this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
             
-        double rollSpeed =  this->lefthip.motorsdata.roll - this->lefthip.encoders.roll;
+        double rollSpeed =  5*(this->lefthip.motorsdata.roll - this->lefthip.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
 
@@ -161,6 +173,10 @@ std::cout << "LIMITE SUPERADO" << std::endl;
         this->lefthip.joint_yaw->SetParam("vel",0, yawSpeed);
         this->lefthip.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->lefthip.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_pan_ant = this->error_pan;
+	this->error_tilt_ant = this->error_tilt;
+	this->error_roll_ant = this->error_roll;
 
 	//this->lefthip.joint_roll->SetPosition(0, 0);
 	//this->lefthip.joint_yaw->SetPosition(0, 0);
@@ -287,6 +303,8 @@ std::cout << "LIMITE SUPERADO" << std::endl;
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseLH = lefthip;
 
         try {
             ic = Ice::initialize(argc, argv);

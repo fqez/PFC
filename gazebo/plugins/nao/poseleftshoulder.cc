@@ -79,8 +79,13 @@ namespace gazebo {
         this->leftshoulder.encoders.tilt = 0.0;
         this->leftshoulder.encoders.roll = 0.0;
         
-        this->leftshoulder.motorsdata.tilt = 0.0;
-        this->leftshoulder.motorsdata.roll = 0.0;
+        this->leftshoulder.motorsdata.tilt = 90.0*M_PI/180;
+        this->leftshoulder.motorsdata.roll = 15.0*M_PI/180;
+
+	this->error_pitch = 0.0;
+	this->error_roll = 0.0;
+	this->error_pitch_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseLeftShoulder::OnUpdate() {
@@ -104,17 +109,23 @@ namespace gazebo {
         this->leftshoulder.joint_roll->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_leftshouldermotors);
+
+	this->error_pitch = this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt;
+	this->error_roll = this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll;
         
-        double pitchSpeed =  this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt;
-        if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-            pitchSpeed = 0.1;
+        double pitchSpeed =  5*(this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
         
-        double rollSpeed =  this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
+        double rollSpeed =  5*(this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
         
         this->leftshoulder.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->leftshoulder.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_pitch_ant = this->error_pitch;
+	this->error_roll_ant = this->error_roll;
 
         //this->leftshoulder.joint_pitch->SetPosition(0, 0);
         //this->leftshoulder.joint_roll->SetPosition(0, 0);
@@ -239,6 +250,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseLS = leftshoulder;
 
         try {
             ic = Ice::initialize(argc, argv);

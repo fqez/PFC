@@ -80,6 +80,11 @@ namespace gazebo {
         
         this->leftankle.motorsdata.tilt = 0.0;
         this->leftankle.motorsdata.roll = 0.0;
+
+	this->error_tilt = 0.0;
+	this->error_roll = 0.0;
+	this->error_tilt_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseLeftAnkle::OnUpdate () {
@@ -103,12 +108,17 @@ namespace gazebo {
         this->leftankle.joint_roll->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_leftanklemotors);
+
+	this->error_tilt = this->leftankle.motorsdata.tilt - this->leftankle.encoders.tilt;
+	this->error_roll = this->leftankle.motorsdata.roll - this->leftankle.encoders.roll;
         
-        double pitchSpeed =  this->leftankle.motorsdata.tilt - this->leftankle.encoders.tilt;
+        double pitchSpeed =  5*(this->leftankle.motorsdata.tilt - this->leftankle.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
+	//double pitchSpeed =  this->leftankle.motorsdata.tilt - this->leftankle.encoders.tilt;
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
         
-        double rollSpeed =  this->leftankle.motorsdata.roll - this->leftankle.encoders.roll;
+	double rollSpeed =  5*(this->leftankle.motorsdata.roll - this->leftankle.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
+        //double rollSpeed =  this->leftankle.motorsdata.roll - this->leftankle.encoders.roll;
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
 
@@ -126,6 +136,9 @@ namespace gazebo {
         
         this->leftankle.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->leftankle.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_tilt_ant = this->error_tilt;
+	this->error_roll_ant = this->error_roll;
 
 		//this->leftankle.joint_pitch->SetPosition(0, 0);
 		//this->leftankle.joint_roll->SetPosition(0, 0);
@@ -251,6 +264,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseLA = leftankle;
 
         try {
             ic = Ice::initialize(argc, argv);

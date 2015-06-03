@@ -71,7 +71,11 @@ namespace gazebo {
         
         float maxYaw, maxRoll, minYaw, minRoll;
         std::string modelYaw, modelRoll;
+
+	double error_yaw, error_yaw_ant;
+	double error_roll, error_roll_ant;
     };
+    PoseRightElbow* poseRE;
 }
 
 #endif // POSERIGHTELBOW_H

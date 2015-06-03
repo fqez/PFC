@@ -71,7 +71,10 @@ namespace gazebo {
         
         float maxPitch, minPitch;
         std::string modelPitch;
+
+	double error_tilt, error_tilt_ant;
     };
+    PoseLeftKnee* poseLK;
 }
 
 #endif // POSELEFTKNEE_H

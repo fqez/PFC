@@ -70,6 +70,10 @@ namespace gazebo {
         this->leftknee.encoders.tilt = 0.0;
         
         this->leftknee.motorsdata.tilt = 0.0;
+	
+	this->error_tilt = 0.0;
+	this->error_tilt_ant = 0.0;
+
     }
 
     void PoseLeftKnee::OnUpdate () {
@@ -91,8 +95,10 @@ namespace gazebo {
         this->leftknee.joint_pitch->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_leftkneemotors);
+
+	this->error_tilt = this->leftknee.motorsdata.tilt - this->leftknee.encoders.tilt;
         
-        double pitchSpeed =  this->leftknee.motorsdata.tilt - this->leftknee.encoders.tilt;
+        double pitchSpeed = 5*(this->leftknee.motorsdata.tilt - this->leftknee.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
         
@@ -105,6 +111,8 @@ namespace gazebo {
 //std::cout << "-------------------------------" << std::endl;
 
         this->leftknee.joint_pitch->SetParam("vel",0, pitchSpeed);
+
+	this->error_tilt_ant = this->error_tilt;
 
         //this->leftknee.joint_pitch->SetPosition(0, 0);
 
@@ -228,6 +236,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseLK = leftknee;
 
         try {
             ic = Ice::initialize(argc, argv);

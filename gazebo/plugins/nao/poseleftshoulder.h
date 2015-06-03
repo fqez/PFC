@@ -71,7 +71,11 @@ namespace gazebo {
         
         float maxPitch, maxRoll, minPitch, minRoll;
         std::string modelPitch, modelRoll;
+
+	double error_pitch, error_pitch_ant;
+	double error_roll, error_roll_ant;
     };
+    PoseLeftShoulder* poseLS;
 }
 
 #endif // LEFTSHOULDER_H

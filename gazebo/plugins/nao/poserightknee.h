@@ -71,6 +71,8 @@ namespace gazebo {
         
         float maxPitch, minPitch;
         std::string modelPitch;
+
+	double error_tilt, error_tilt_ant;
     };
 
     void* thread_RightKneeICE ( void* v );
