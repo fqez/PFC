@@ -71,7 +71,12 @@ namespace gazebo {
         
         float maxYaw, maxPitch, maxRoll, minYaw, minPitch, minRoll;
         std::string modelYaw, modelPitch, modelRoll;
+
+	double error_tilt, error_tilt_ant;
+	double error_roll, error_roll_ant;
+	double error_pan, error_pan_ant;
     };
+    PoseLeftHip* poseLH;
 }
 
 #endif // POSERIGHTHIP_H

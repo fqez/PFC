@@ -70,6 +70,9 @@ namespace gazebo {
         this->rightknee.encoders.tilt = 0.0;
         
         this->rightknee.motorsdata.tilt = 0.0;
+	
+	this->error_tilt = 0;
+	this->error_tilt_ant = 0;
     }
 
     void PoseRightKnee::OnUpdate () {
@@ -92,8 +95,10 @@ namespace gazebo {
 		//this->rightknee.joint_pitch->SetMaxForce(0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_rightkneemotors);
+
+	this->error_tilt = this->rightknee.motorsdata.tilt - this->rightknee.encoders.tilt;
         
-        double pitchSpeed =  this->rightknee.motorsdata.tilt - this->rightknee.encoders.tilt;
+        double pitchSpeed =  5*(this->rightknee.motorsdata.tilt - this->rightknee.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
 
@@ -106,6 +111,8 @@ namespace gazebo {
 //std::cout << "-------------------------------" << std::endl;
         
         this->rightknee.joint_pitch->SetParam("vel",0, pitchSpeed);
+
+	this->error_tilt_ant = this->error_tilt;
 
 	//this->rightknee.joint_pitch->SetPosition(0, 1.57);
 

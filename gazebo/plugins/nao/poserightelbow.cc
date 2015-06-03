@@ -82,8 +82,13 @@ namespace gazebo {
         this->rightelbow.encoders.pan = 0.0;
         this->rightelbow.encoders.roll = 0.0;
         
-        this->rightelbow.motorsdata.pan = 1.01;
+        this->rightelbow.motorsdata.pan = 0.0;
         this->rightelbow.motorsdata.roll = 0.0;
+
+	this->error_yaw = 0.0;
+	this->error_roll = 0.0;
+	this->error_yaw_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseRightElbow::OnUpdate () {
@@ -107,17 +112,23 @@ namespace gazebo {
         this->rightelbow.joint_roll->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_rightelbowmotors);
+
+	this->error_yaw = this->rightelbow.motorsdata.pan - this->rightelbow.encoders.pan;
+	this->error_roll = this->rightelbow.motorsdata.roll - this->rightelbow.encoders.roll;
         
-        double yawSpeed =  this->rightelbow.motorsdata.pan - this->rightelbow.encoders.pan;
-        if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
-            yawSpeed = 0.1;
+        double yawSpeed =  5*(this->rightelbow.motorsdata.pan - this->rightelbow.encoders.pan) + 0.1*(this->error_yaw - this->error_yaw_ant);
+        //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
+        //    yawSpeed = 0.1;
         
-        double rollSpeed =  this->rightelbow.motorsdata.roll - this->rightelbow.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
+        double rollSpeed =  5*(this->rightelbow.motorsdata.roll - this->rightelbow.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
         
         this->rightelbow.joint_yaw->SetParam("vel",0, yawSpeed);
         this->rightelbow.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_yaw_ant = this->error_yaw;
+	this->error_roll_ant = this->error_roll;
 
 	//this->rightelbow.joint_yaw->SetPosition(0, 0);
 	//this->rightelbow.joint_roll->SetPosition(0, 0);
@@ -241,6 +252,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseRE = rightelbow;
 
         try {
             ic = Ice::initialize(argc, argv);

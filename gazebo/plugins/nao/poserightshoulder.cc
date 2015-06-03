@@ -81,8 +81,13 @@ namespace gazebo {
         this->rightshoulder.encoders.tilt = 0.0;
         this->rightshoulder.encoders.roll = 0.0;
         
-        this->rightshoulder.motorsdata.tilt = 0.0;
-        this->rightshoulder.motorsdata.roll = 0.0;
+        this->rightshoulder.motorsdata.tilt = 90.0*M_PI/180;
+        this->rightshoulder.motorsdata.roll = -15.0*M_PI/180;
+
+	this->error_pitch = 0.0;
+	this->error_roll = 0.0;
+	this->error_pitch_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseRightShoulder::OnUpdate () {
@@ -105,17 +110,24 @@ namespace gazebo {
         this->rightshoulder.joint_roll->SetParam("fmax",0, this->stiffness);
         
         pthread_mutex_lock(&this->mutex_rightshouldermotors);
+
+	this->rightshoulder.joint_pitch->SetParam("fmax",0, this->stiffness);
+        this->rightshoulder.joint_roll->SetParam("fmax",0, this->stiffness);
         
-        double pitchSpeed =  this->rightshoulder.motorsdata.tilt - this->rightshoulder.encoders.tilt;
-        if ((std::abs(pitchSpeed) > 0.001) && (std::abs(pitchSpeed) < 0.1))
-            pitchSpeed = 0.1;
+        double pitchSpeed =  5*(this->rightshoulder.motorsdata.tilt - this->rightshoulder.encoders.tilt) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
         
-        double rollSpeed =  this->rightshoulder.motorsdata.roll - this->rightshoulder.encoders.roll;
-        if ((std::abs(rollSpeed) > 0.001) && (std::abs(rollSpeed) < 0.1))
-            rollSpeed = 0.1;
+        double rollSpeed =  5*(this->rightshoulder.motorsdata.roll - this->rightshoulder.encoders.roll) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
         
         this->rightshoulder.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->rightshoulder.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_pitch_ant = this->error_pitch;
+	this->error_roll_ant = this->error_roll;
+
 
 	//this->rightshoulder.joint_pitch->SetPosition(0, 0);
         //this->rightshoulder.joint_roll->SetPosition(0, 0);

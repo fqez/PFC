@@ -111,12 +111,12 @@ namespace gazebo {
         pthread_mutex_lock(&this->mutex_neckmotors);
         
         double panSpeed =  this->neck.motorsdata.pan - this->neck.encoders.pan;
-        if ((std::abs(panSpeed) < 0.1) && (std::abs(panSpeed) > 0.001))
-            panSpeed = 0.1;
+        //if ((std::abs(panSpeed) < 0.1) && (std::abs(panSpeed) > 0.001))
+        //    panSpeed = 0.1;
         
         double tiltSpeed =  this->neck.motorsdata.tilt - this->neck.encoders.tilt;
-        if ((std::abs(tiltSpeed) < 0.1) && (std::abs(tiltSpeed) > 0.001))
-            tiltSpeed = 0.1;
+        //if ((std::abs(tiltSpeed) < 0.1) && (std::abs(tiltSpeed) > 0.001))
+        //    tiltSpeed = 0.1;
 
 
 
@@ -246,6 +246,8 @@ std::cout << "pan: " << data->pan << " ; tilt: " << data->tilt << std::endl;
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseNeck = neck;
 
         try {
             ic = Ice::initialize(argc, argv);

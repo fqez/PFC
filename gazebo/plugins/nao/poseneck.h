@@ -71,6 +71,7 @@ namespace gazebo {
         
         std::string modelPan, modelTilt;
     };
+    PoseNeck* poseNeck;
 }
 
 #endif // POSENECK_H

@@ -92,6 +92,13 @@ namespace gazebo {
         this->righthip.motorsdata.pan = 0.0;
         this->righthip.motorsdata.tilt = 0.0;
         this->righthip.motorsdata.roll = 0.0;
+
+	this->error_pan = 0.0;
+	this->error_tilt = 0.0;
+	this->error_roll = 0.0;
+	this->error_pan_ant = 0.0;
+	this->error_tilt_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseRightHip::OnUpdate () {
@@ -118,17 +125,22 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_righthipmotors);
         
+	//this->error_pan = this->righthip.motorsdata.pan - this->righthip.encoders.pan;
+	this->error_tilt = this->righthip.motorsdata.tilt - this->righthip.encoders.tilt;
+	this->error_roll = this->righthip.motorsdata.roll - this->righthip.encoders.roll;
+
         double yawSpeed =  this->righthip.motorsdata.pan - this->righthip.encoders.pan;
         //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
         //    yawSpeed = 0.1;
         
-        double pitchSpeed =  this->righthip.motorsdata.tilt - this->righthip.encoders.tilt;
+        double pitchSpeed =  5*(this->righthip.motorsdata.tilt - this->righthip.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
             
-        double rollSpeed =  this->righthip.motorsdata.roll - this->righthip.encoders.roll;
+        double rollSpeed =  5*(this->righthip.motorsdata.roll - this->righthip.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
+
 
 	if ((this->righthip.motorsdata.pan >= maxYaw) || (this->righthip.motorsdata.pan <= minYaw))
 			yawSpeed = 0.0;
@@ -146,6 +158,10 @@ namespace gazebo {
         this->righthip.joint_yaw->SetParam("vel",0, yawSpeed);
         this->righthip.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->righthip.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_pan_ant = this->error_pan;
+	this->error_tilt_ant = this->error_tilt;
+	this->error_roll_ant = this->error_roll;
 
 	//this->righthip.joint_roll->SetPosition(0, 0);
 	//this->righthip.joint_yaw->SetPosition(0, 0);
@@ -272,6 +288,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseRH = righthip;
 
         try {
             ic = Ice::initialize(argc, argv);

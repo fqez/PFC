@@ -85,6 +85,11 @@ namespace gazebo {
         
         this->rightankle.motorsdata.tilt = 0.0;
         this->rightankle.motorsdata.roll = 0.0;
+
+	this->error_tilt = 0.0;
+	this->error_roll = 0.0;
+	this->error_tilt_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseRightAnkle::OnUpdate () {
@@ -109,12 +114,16 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_rightanklemotors);
         
-        double pitchSpeed =  this->rightankle.motorsdata.tilt - this->rightankle.encoders.tilt;
-        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
-          //  pitchSpeed = 0.0;
+        this->error_tilt = this->rightankle.motorsdata.tilt - this->rightankle.encoders.tilt;
+	this->error_roll = this->rightankle.motorsdata.roll - this->rightankle.encoders.roll;
         
-        double rollSpeed =  this->rightankle.motorsdata.roll - this->rightankle.encoders.roll;
-        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        double pitchSpeed =  5*(this->rightankle.motorsdata.tilt - this->rightankle.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
+	//double pitchSpeed =  this->rightankle.motorsdata.tilt - this->rightankle.encoders.tilt;
+        //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
+        //    pitchSpeed = 0.1;
+        
+	double rollSpeed =  5*(this->rightankle.motorsdata.roll - this->rightankle.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
+        //double rollSpeed =  this->rightankle.motorsdata.roll - this->rightankle.encoders.roll;
         //    rollSpeed = 0.0;
 		
 		// Checking joint limits, avoiding weird behaviours
@@ -132,6 +141,10 @@ namespace gazebo {
 
         this->rightankle.joint_pitch->SetParam("vel",0, pitchSpeed);
         this->rightankle.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_tilt_ant = this->error_tilt;
+	this->error_roll_ant = this->error_roll;
+
 
 		//this->rightankle.joint_pitch->SetForce(0, 0);
 		//this->rightankle.joint_roll->SetForce(0, 0);
@@ -260,6 +273,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseRA = rightankle;
 
         try {
             ic = Ice::initialize(argc, argv);

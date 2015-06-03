@@ -80,8 +80,13 @@ namespace gazebo {
         this->leftelbow.encoders.pan = 0.0;
         this->leftelbow.encoders.roll = 0.0;
         
-        this->leftelbow.motorsdata.pan = -1.01;
+        this->leftelbow.motorsdata.pan = 0.0;
         this->leftelbow.motorsdata.roll = 0.0;
+
+	this->error_yaw = 0.0;
+	this->error_roll = 0.0;
+	this->error_yaw_ant = 0.0;
+	this->error_roll_ant = 0.0;
     }
 
     void PoseLeftElbow::OnUpdate () {
@@ -106,16 +111,22 @@ namespace gazebo {
         
         pthread_mutex_lock(&this->mutex_leftelbowmotors);
         
-        double yawSpeed =  this->leftelbow.motorsdata.pan - this->leftelbow.encoders.pan;
-        if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
-            yawSpeed = 0.1;
+        this->error_yaw = this->leftelbow.motorsdata.pan - this->leftelbow.encoders.pan;
+	this->error_roll = this->leftelbow.motorsdata.roll - this->leftelbow.encoders.roll;
         
-        double rollSpeed =  this->leftelbow.motorsdata.roll - this->leftelbow.encoders.roll;
-        if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
-            rollSpeed = 0.1;
+        double yawSpeed =  5*(this->leftelbow.motorsdata.pan - this->leftelbow.encoders.pan) + 0.1*(this->error_yaw - this->error_yaw_ant);
+        //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
+        //    yawSpeed = 0.1;
+        
+        double rollSpeed =  5*(this->leftelbow.motorsdata.roll - this->leftelbow.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
+        //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
+        //    rollSpeed = 0.1;
         
         this->leftelbow.joint_yaw->SetParam("vel",0, yawSpeed);
         this->leftelbow.joint_roll->SetParam("vel",0, rollSpeed);
+
+	this->error_yaw_ant = this->error_yaw;
+	this->error_roll_ant = this->error_roll;
 	
 	//this->leftelbow.joint_yaw->SetPosition(0, 0);
 	//this->leftelbow.joint_roll->SetPosition(0, 0);
@@ -239,6 +250,8 @@ namespace gazebo {
         int argc = 1;
         Ice::PropertiesPtr prop;
         char* argv[] = {name};
+
+	poseLE = leftelbow;
 
         try {
             ic = Ice::initialize(argc, argv);
