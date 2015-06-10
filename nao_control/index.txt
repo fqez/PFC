@@ -1,0 +1,11 @@
+index#476800
+for1:0
+for2:0
+for3:-100
+for4:0
+for5:-6
+for6:0
+for7:0
+for8:-3
+for9:-75
+for10:0

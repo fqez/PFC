@@ -1,0 +1,2 @@
+walker.RightShoulderMotors.Proxy=RightShoulderMotors:default -h localhost -p 9091
+walker.RightElbowMotors.Proxy=RightElbowMotors:default -h localhost -p 9071

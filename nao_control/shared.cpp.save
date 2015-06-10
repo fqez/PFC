@@ -1,0 +1,28 @@
+//
+//  shared.cpp
+//  
+//
+//  Created by Francisco Perez on 18/02/14.
+//
+//
+
+#include "shared.h"
+#include <cv.h>
+
+	Shared::Shared() {
+		this->connect = false;
+		pthread_mutex_init(&mutex,NULL);
+	}
+
+    Shared::~Shared() {};
+
+	void Shared::connectGazebo(bool connect) {
+		pthread_mutex_lock(&mutex);
+		this->connect = connect
+		pthread_mutex_unlock(&mutex);
+	}
+
+	bool Shared::canConnect() {
+		//mutex ??
+		return connect;
+	}
