@@ -15,6 +15,9 @@ class Control
 {
 
 	public:
+
+		enum State {START, PAUSE, STOP};
+
 		Control(Ice::CommunicatorPtr ic, Shared* sm);
 		virtual ~Control();
 		void update();

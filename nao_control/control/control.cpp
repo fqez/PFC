@@ -7,6 +7,7 @@
 #include <jderobot/pose3d.h>
 #include <IceUtil/IceUtil.h>
 #include "pthread.h"
+#include "../raked_search.h"
 
 
 Control::Control(Ice::CommunicatorPtr ic, Shared* sm) {
@@ -61,9 +62,9 @@ std::cout << "ff" << std::endl;
 	std::cout << data->q2 << std::endl;
 	std::cout << data->q3 << std::endl; */
 
-	jderobot::WalkerDataPtr walkerdata  = new jderobot::WalkerData();
+	jderobot::WalkerData* walkerdata  = new jderobot::WalkerData();
 
-	//GENERACION DE PARAMETROS PARA LA CAMINATA
+	//GENERACION DE PARAMETROS PARA LA CAMINATA crear clase de busqueda rastrillada
     	walkerdata->param1 = 0.9;
 	walkerdata->param2 = 11;
 	walkerdata->param3 = -27;
@@ -92,6 +93,7 @@ void Control::update() {
 			connected = true;
 		}
 	}
+
 
 	//comprobar si ha terminado la simulación y generar nuevos parametros de caminata
 	/*

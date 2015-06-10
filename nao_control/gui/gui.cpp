@@ -16,7 +16,8 @@
 #include <pthread.h>
 
 
-
+Shared* sm;
+bool reset_search;
 using namespace std;
 
 int getdir (string dir, vector<string> &files)
@@ -36,11 +37,11 @@ int getdir (string dir, vector<string> &files)
     return 0;
 }
 
-
-Gui::Gui(Shared* sm)
+Gui::Gui(Shared* shm)
 {
 
-	this->sm = sm;
+	sm = shm;
+	reset_search = true;
 
 	string dir = string("/home/fran/.gazebo/models");
 	vector<string> files = vector<string>();
@@ -468,32 +469,48 @@ void Gui::on_eliminar_buttonpressed(){
 	std::cout << "presionado eliminar" << std::endl;
 }
 
-void Gui::on_pausa_buttonpressed(){
 
-	//Pausar la simulacion actual
+void* search(void*) {
+		
+	RakedSearch* ss = new RakedSearch(sm);
+	ss->initialize();
+	ss->searchAll(reset_search);
 
-	cronometro->pause();
-sm->connectGazebo(true);
-	std::cout << "presionado pausa" << std::endl;
+	std::cout << "FIN" << std::endl;
+
+	return 0;
 }
+
 void Gui::on_play_buttonpressed(){
 
 	//Comenzar las simulaciones.
-	//contador de simulaciones ++
-	//gerenar parametros caminata
-	//enviar parametros al plugin
+	sm->setSimState(0);	//START
+	sm->setSearchState(0);	//STOP
 
 	cronometro->start();
 
-	//Esperar respuesta (espera activa?) o a que pasen X segundos
-	//Cronometro snapshot
-	//Preguntar por estadisticas
+	pthread_t search_t;
+	pthread_create(&search_t, NULL, &search, NULL);
    
 	std::cout << "presionado play " << std::endl;
+}
+void Gui::on_pausa_buttonpressed(){
+
+	//Pausar la simulacion actual
+	sm->setSimState(1);	//PAUSE
+	sm->setSearchState(1);	//STOP
+	reset_search = false;
+	cronometro->pause();
+
+
+	std::cout << "presionado pausa" << std::endl;
 }
 void Gui::on_stop_buttonpressed(){
 
 	//Detener simulación
+	sm->setSimState(2);	//STOP
+	sm->setSearchState(2);	//STOP
+	reset_search = false;
 	//contador simulaciones a cero
 	cronometro->stop();
 
