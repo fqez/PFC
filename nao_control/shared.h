@@ -17,6 +17,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <jderobot/walker.h>
+
 
 
     class Shared {
@@ -26,8 +28,23 @@
 	Shared();
         virtual ~Shared();
 
+	enum State {START, PAUSE, STOP};
+
 	void connectGazebo(bool);
 	bool canConnect();
+
+	bool isRunning();
+	bool isPaused();
+	bool isStopped();
+
+	void setSimState(int);
+	void setSearchState(int);
+	
+	bool isSearchRunning();
+	bool isSearchPaused();
+	bool isSearchStopped();
+
+	void addSearch(jderobot::WalkerData*);
         
         
         
@@ -35,6 +52,10 @@
         pthread_mutex_t mutex;
 
 	bool connect;
+	State searchState;
+	bool pause;
+	State state;
+	std::vector<jderobot::WalkerDataPtr> searches;
         
     };
 

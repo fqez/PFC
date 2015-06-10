@@ -63,7 +63,8 @@ add_executable(nao_control
 	control/control.cpp
 	shared.cpp
 	gui/glWidget.cpp
-	main.cpp	
+	main.cpp
+	raked_search.cpp	
 	${qt_SOURCES} 
 	${qt_FORMS} 
 	${qt_HEADERS_MOC})

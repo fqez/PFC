@@ -15,6 +15,7 @@
 #include <QWidget>
 #include "glWidget.h"
 #include "LCDNumber.h"
+#include "../raked_search.h"
 
 //Values for a range between 10 and -10. Eq = (sliValue - mid_range)*step so if slider value is 101 the equation will convert it
 //into 0.1 due to the step.   
@@ -42,8 +43,9 @@ public:
 private:
 
     //Control
-    Shared* sm;
+//    Shared* sm;
     GLWidget window;
+
 
    /*  QWidget *gridLayoutWidget;
     QGridLayout *gridGazebo;
