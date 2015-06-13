@@ -53,7 +53,7 @@ namespace gazebo {
 		physics::ModelPtr getModel();
 
 		pthread_mutex_t mutex;
-       		pthread_mutex_t mutex2;
+       	pthread_mutex_t mutex2;
 		struct params_t {
             		float w;
 			float hip_amplitude;
@@ -67,65 +67,13 @@ namespace gazebo {
 			float balance;
         };
         params_t my_params;
-        std::string cfgfile_walking;
-
-	//Right shoulder
-        pthread_mutex_t mutex_rightshoulderencoders;
-        pthread_mutex_t mutex_rightshouldermotors;
-
-	struct rightshoulder_t {
-            physics::JointPtr joint_pitch, joint_roll;
-            encoders_t encoders;
-            motorsdata_t motorsdata;
-            motorsparams_t motorsparams;
-        };
-	
-	rightshoulder_t rightshoulder;
-
-	//Right elbow
- 	pthread_mutex_t mutex_rightelbowencoders;
-        pthread_mutex_t mutex_rightelbowmotors;
-
-	struct rightelbow_t {
-            physics::JointPtr joint_yaw, joint_roll;
-            encoders_t encoders;
-            motorsdata_t motorsdata;
-            motorsparams_t motorsparams;
-        };
-
-        rightelbow_t rightelbow;
-
-	struct rightknee_t {
-            physics::JointPtr joint_pitch;
-            encoders_t encoders;
-            motorsdata_t motorsdata;
-            motorsparams_t motorsparams;
-        };
-
-        rightknee_t rightknee;
-
-        
+        std::string cfgfile_walking;      
 
     private:
         void OnUpdate ();
         
         event::ConnectionPtr updateConnection;
         physics::ModelPtr model;
-
-	//Right shoulder
-        double stiffness;
-        int cycle;
-       
-        float maxPitchRShoulder, maxRollRShoulder, minPitchRShoulder, minRollRShoulder;
-        std::string modelRShoulderPitch, modelRShoulderRoll;
-
-	//Right elbow
-	double stiffnessRElbow;
-        int cycleRElbow;
-        
-        float maxYawRElbow, maxRollRElbow, minYawRElbow, minRollRElbow;
-        std::string modelRElbowYaw, modelRElbowRoll;
-
 
     };
 }

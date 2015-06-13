@@ -72,6 +72,7 @@ namespace gazebo {
         float maxPitch, maxRoll, minPitch, minRoll;
         std::string modelPitch, modelRoll;
     };
+
 }
 
 #endif // RIGHTANKLE_H

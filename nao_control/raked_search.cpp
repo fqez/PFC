@@ -176,19 +176,19 @@
 													jderobot::WalkerData* comb = new jderobot::WalkerData();
 													this->index++;		
 
-													float aux = for1/10;  				
+													float aux = for1a/10.0;  	
 												
 													//guardar valores en memoria compartida (vector)
 													comb->param1 = aux;
-													comb->param2 = for2;
-													comb->param3 = for3;
-													comb->param4 = for4;
-													comb->param5 = for5;  //valores de PI
-													comb->param6 = for6;
-													comb->param7 = for7;
-													comb->param8 = for8;   //valores de PI
-													comb->param9 = for9;
-													comb->param10 = for10;
+													comb->param2 = for2a;
+													comb->param3 = for3a;
+													comb->param4 = for4a;
+													comb->param5 = for5a;  //valores de PI
+													comb->param6 = for6a;
+													comb->param7 = for7a;
+													comb->param8 = for8a;   //valores de PI
+													comb->param9 = for9a;
+													comb->param10 = for10a;
 		
 													this->sm->addSearch(comb);
 												
@@ -200,16 +200,16 @@
 													}
 
 													search_file<<"Search#"<<index<<"\n";
-													search_file<<"param1:"<<for1<<"\n";
-												  	search_file<<"param2:"<<for2<<"\n";
-												  	search_file<<"param3:"<<for3<<"\n";
-												  	search_file<<"param4:"<<for4<<"\n";
-												  	search_file<<"param5:"<<for5<<"\n";
-												  	search_file<<"param6:"<<for6<<"\n";
-												  	search_file<<"param7:"<<for7<<"\n";
-												  	search_file<<"param8:"<<for8<<"\n";
-												  	search_file<<"param9:"<<for9<<"\n";
-												  	search_file<<"param10:"<<for10<<"\n\n";
+													search_file<<"param1:"<<aux<<"\n";
+												  	search_file<<"param2:"<<for2a<<"\n";
+												  	search_file<<"param3:"<<for3a<<"\n";
+												  	search_file<<"param4:"<<for4a<<"\n";
+												  	search_file<<"param5:"<<for5a<<"\n";
+												  	search_file<<"param6:"<<for6a<<"\n";
+												  	search_file<<"param7:"<<for7a<<"\n";
+												  	search_file<<"param8:"<<for8a<<"\n";
+												  	search_file<<"param9:"<<for9a<<"\n";
+												  	search_file<<"param10:"<<for10a<<"\n\n";
 
 												
 												}
@@ -234,13 +234,11 @@
 
 	void RakedSearch::initialize() {
 
-
-		
 		this->index = 0;
 
-		my_params.w.min = 0;
-		my_params.w.max = 10;
-		my_params.w.inc = 1;
+		my_params.w.min = 6;
+		my_params.w.max = 26;
+		my_params.w.inc = 3;
 		for1 = my_params.w.min;
 
 		my_params.hip_amplitude.min = 0;

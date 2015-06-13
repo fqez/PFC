@@ -17,6 +17,8 @@
 #include "LCDNumber.h"
 #include "../raked_search.h"
 
+#include <jderobot/walker.h>
+
 //Values for a range between 10 and -10. Eq = (sliValue - mid_range)*step so if slider value is 101 the equation will convert it
 //into 0.1 due to the step.   
 const float step = 0.1;
@@ -63,7 +65,7 @@ private:
     QPushButton *paso;
     QPushButton *stop;
     QPushButton *play;
-    QPushButton *reiniciar;
+    QPushButton *buscar;
     QPushButton *pausa;
     LCDNumber *cronometro;
     QGridLayout *estadisticas;
@@ -98,7 +100,7 @@ private:
     QGridLayout *gridLayout_8;
     QPushButton *playButton;
     LCDNumber *cronometro;
-    QPushButton *reiniciarButton;
+    QPushButton *buscarButton;
     QPushButton *pausaButton;
     QPushButton *stopButton;
     QGridLayout *gridLayout_10;
@@ -108,6 +110,10 @@ private:
     QLabel *distanciaValLabel;
     QLabel *desviacionValLabel;
     QLabel *desviacionLabel;
+    QLabel *caidaLabel;
+	QLabel *caidaValLabel;
+    QLabel *saludLabel;
+	QLabel *saludValLabel;
     QPushButton *pushButton_5;
     QLabel *label;
     QLabel *label_2;
@@ -132,7 +138,7 @@ private slots:
 	void on_pausa_buttonpressed();
 	void on_play_buttonpressed();
 	void on_stop_buttonpressed();
-	void on_reiniciar_buttonpressed();
+	void on_buscar_buttonpressed();
    	void updateAll();
 	void sleep(unsigned long);
 

@@ -135,11 +135,11 @@ namespace gazebo {
         //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
         //    yawSpeed = 0.1;
         
-        double pitchSpeed =  5*(this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
+        double pitchSpeed =  10*(this->lefthip.motorsdata.tilt - this->lefthip.encoders.tilt) + 0.1*(this->error_tilt - this->error_tilt_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
             
-        double rollSpeed =  5*(this->lefthip.motorsdata.roll - this->lefthip.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
+        double rollSpeed =  10*(this->lefthip.motorsdata.roll - this->lefthip.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
 

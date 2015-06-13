@@ -116,11 +116,11 @@ namespace gazebo {
 	this->error_yaw = this->rightelbow.motorsdata.pan - this->rightelbow.encoders.pan;
 	this->error_roll = this->rightelbow.motorsdata.roll - this->rightelbow.encoders.roll;
         
-        double yawSpeed =  5*(this->rightelbow.motorsdata.pan - this->rightelbow.encoders.pan) + 0.1*(this->error_yaw - this->error_yaw_ant);
+        double yawSpeed =  10*(this->rightelbow.motorsdata.pan - this->rightelbow.encoders.pan) + 0.1*(this->error_yaw - this->error_yaw_ant);
         //if ((std::abs(yawSpeed) < 0.1) && (std::abs(yawSpeed) > 0.001))
         //    yawSpeed = 0.1;
         
-        double rollSpeed =  5*(this->rightelbow.motorsdata.roll - this->rightelbow.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
+        double rollSpeed =  10*(this->rightelbow.motorsdata.roll - this->rightelbow.encoders.roll) + 0.1*(this->error_roll - this->error_roll_ant);
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
         

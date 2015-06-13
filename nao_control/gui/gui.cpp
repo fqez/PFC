@@ -154,14 +154,14 @@ Gui::Gui(Shared* shm)
 
 	gridLayout_8->addWidget(cronometro, 0, 0, 1, 6);
 
-    reiniciarButton = new QPushButton(simulation);
-    reiniciarButton->setObjectName(QString::fromUtf8("reiniciarButton"));
-    QIcon icon1;
+    buscarButton = new QPushButton(simulation);
+    buscarButton->setObjectName(QString::fromUtf8("buscarButton"));
+    /*QIcon icon1;
     icon1.addFile(QString::fromUtf8("icons/reset.png"), QSize(), QIcon::Normal, QIcon::Off);
-    reiniciarButton->setIcon(icon1);
-    reiniciarButton->setIconSize(QSize(16, 16));
+    buscarButton->setIcon(icon1);
+    buscarButton->setIconSize(QSize(16, 16));*/
 
-    gridLayout_8->addWidget(reiniciarButton, 1, 5, 1, 1);
+    gridLayout_8->addWidget(buscarButton, 1, 5, 1, 1);
 
     pausaButton = new QPushButton(simulation);
     pausaButton->setObjectName(QString::fromUtf8("pausaButton"));
@@ -212,7 +212,7 @@ Gui::Gui(Shared* shm)
     pushButton_5 = new QPushButton(simulation);
     pushButton_5->setObjectName(QString::fromUtf8("pushButton_5"));
 
-    gridLayout_10->addWidget(pushButton_5, 4, 1, 1, 1);
+    gridLayout_10->addWidget(pushButton_5, 6, 1, 1, 1);
 
     label = new QLabel(simulation);
     label->setObjectName(QString::fromUtf8("label"));
@@ -230,6 +230,25 @@ Gui::Gui(Shared* shm)
 
     gridLayout_10->addWidget(timepoLabel, 1, 0, 1, 1);
 
+	caidaLabel = new QLabel(simulation);
+    caidaLabel->setObjectName(QString::fromUtf8("caidaLabel"));
+
+    gridLayout_10->addWidget(caidaLabel, 4, 0, 1, 1);
+
+    caidaValLabel = new QLabel(simulation);
+    caidaValLabel->setObjectName(QString::fromUtf8("caidaValLabel"));
+
+    gridLayout_10->addWidget(caidaValLabel, 4, 1, 1, 1);
+
+	saludLabel = new QLabel(simulation);
+    saludLabel->setObjectName(QString::fromUtf8("saludLabel"));
+
+    gridLayout_10->addWidget(saludLabel, 5, 0, 1, 1);
+
+    saludValLabel = new QLabel(simulation);
+    saludValLabel->setObjectName(QString::fromUtf8("saludValLabel"));
+
+    gridLayout_10->addWidget(saludValLabel, 5, 1, 1, 1);
 
     verticalLayout_6->addLayout(gridLayout_10);
 
@@ -308,7 +327,7 @@ Gui::Gui(Shared* shm)
     buttonEliminar->setText(QApplication::translate("this", "Eliminar", 0, QApplication::UnicodeUTF8));
     simulation->setTitle(QApplication::translate("this", "Simulacion", 0, QApplication::UnicodeUTF8));
     playButton->setText(QString());
-    reiniciarButton->setText(QApplication::translate("this", "Reiniciar", 0, QApplication::UnicodeUTF8));
+    buscarButton->setText(QApplication::translate("this", "Buscar \n caminatas", 0, QApplication::UnicodeUTF8));
     pausaButton->setText(QString());
     stopButton->setText(QString());
     tiempoValLabel->setText(QApplication::translate("this", "--", 0, QApplication::UnicodeUTF8));
@@ -317,9 +336,13 @@ Gui::Gui(Shared* shm)
     desviacionValLabel->setText(QApplication::translate("this", "--", 0, QApplication::UnicodeUTF8));
     desviacionLabel->setText(QApplication::translate("this", "Desviaci\303\263n:", 0, QApplication::UnicodeUTF8));
     pushButton_5->setText(QApplication::translate("this", "Detalles", 0, QApplication::UnicodeUTF8));
-    label->setText(QApplication::translate("this", "Test completados:", 0, QApplication::UnicodeUTF8));
+    label->setText(QApplication::translate("this", "Test id:", 0, QApplication::UnicodeUTF8));
     label_2->setText(QApplication::translate("this", "--", 0, QApplication::UnicodeUTF8));
     timepoLabel->setText(QApplication::translate("this", "Tiempo:", 0, QApplication::UnicodeUTF8));
+	caidaLabel->setText(QApplication::translate("this", "Caida:", 0, QApplication::UnicodeUTF8));
+    caidaValLabel->setText(QApplication::translate("this", "--", 0, QApplication::UnicodeUTF8));
+	saludLabel->setText(QApplication::translate("this", "Salud:", 0, QApplication::UnicodeUTF8));
+    saludValLabel->setText(QApplication::translate("this", "--", 0, QApplication::UnicodeUTF8));
     buttonAbrirGazebo->setText(QApplication::translate("this", "Abrir Gazebo", 0, QApplication::UnicodeUTF8));
     buttonCerrarGazebo->setText(QApplication::translate("this", "Cerrar Gazebo", 0, QApplication::UnicodeUTF8));
     tabWidget->setTabText(tabWidget->indexOf(basicTab), QApplication::translate("this", "B\303\241sico", 0, QApplication::UnicodeUTF8));
@@ -335,7 +358,7 @@ Gui::Gui(Shared* shm)
 	QObject::connect(playButton, SIGNAL(pressed()), this, SLOT(on_play_buttonpressed()));
 	QObject::connect(pausaButton, SIGNAL(pressed()), this, SLOT(on_pausa_buttonpressed()));
 	QObject::connect(stopButton, SIGNAL(pressed()), this, SLOT(on_stop_buttonpressed()));
-	QObject::connect(reiniciarButton, SIGNAL(pressed()), this, SLOT(on_reiniciar_buttonpressed()));
+	QObject::connect(buscarButton, SIGNAL(pressed()), this, SLOT(on_buscar_buttonpressed()));
 
     show();
 
@@ -404,6 +427,21 @@ int Gui::crearFichero(std::string a) {
 
 void Gui::updateThreadGui(){
 
+	jderobot::StadisticsDataPtr stads;
+
+	if ((stads = sm->getStadFlag()) != 0) {
+	
+		tiempoValLabel->setText(QString::number(stads->simTime) + QString::fromStdString(" s"));
+		distanciaValLabel->setText(QString::number(stads->distance) + QString::fromStdString(" cm"));
+		desviacionValLabel->setText(QString::number(stads->desviation) + QString::fromStdString(" cm"));
+		label_2->setText(QString::number(stads->id));
+		std::string fallen = (stads->fallen != 0) ? "Yes" : "No";
+		caidaValLabel->setText(QString::fromStdString(fallen));
+		saludValLabel->setText(QString::number((int)stads->fitness/11) + QString::fromStdString(" %"));
+		
+
+		sm->setStadFlag(false);
+	}
 }
 
 void* gazeboThread(void*) {
@@ -415,9 +453,9 @@ void* gazeboThread(void*) {
 //SERÁ NECESARIO UN HILO PARA MOSTRAR LA INTERFAZ.
 
 	//si la opcion de interfaz de gazebo esta activada
-	if (true)
-		 command = "gazebo "+fileName;
-	else
+	//if (true)
+	//	 command = "gazebo "+fileName;
+	//else
 		//si no queremos interfaz de gazebo
 		command = "gzserver "+fileName;
     int a = system(command.c_str());	//manejo de excepciones
@@ -488,9 +526,6 @@ void Gui::on_play_buttonpressed(){
 	sm->setSearchState(0);	//STOP
 
 	cronometro->start();
-
-	pthread_t search_t;
-	pthread_create(&search_t, NULL, &search, NULL);
    
 	std::cout << "presionado play " << std::endl;
 }
@@ -520,10 +555,12 @@ void Gui::on_stop_buttonpressed(){
 	std::cout << "presionado stop " << tiempo << std::endl;
 }
 
-void Gui::on_reiniciar_buttonpressed(){
+void Gui::on_buscar_buttonpressed(){
 
 	//Limpiar historial de tests
-	std::cout << "presionado reiniciar" << std::endl;
+	std::cout << "presionado buscar" << std::endl;
+	pthread_t search_t;
+	pthread_create(&search_t, NULL, &search, NULL);
 }
 
 

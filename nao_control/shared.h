@@ -13,6 +13,9 @@
 #include <iostream>
 #include <pthread.h>
 
+#include <fstream>
+#include <iostream>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -45,7 +48,28 @@
 	bool isSearchStopped();
 
 	void addSearch(jderobot::WalkerData*);
-        
+	jderobot::WalkerDataPtr getNextSearch();
+	jderobot::WalkerDataPtr getSearch(int);
+	jderobot::WalkerDataPtr getRandomSearch();
+	int nSearches();
+
+
+	void setStads(jderobot::StadisticsDataPtr);
+	float getSimTime();
+	std::string getFallen();
+	float getX0();
+	float getY0();
+	float getZ0();
+	float getX1();
+	float getY1();
+	float getZ1();
+	float getDistance();
+	int getFitness();
+	float getDesviation();
+	int getIndex();
+
+	void setStadFlag(bool);
+	jderobot::StadisticsDataPtr getStadFlag();
         
         
     private:
@@ -56,7 +80,12 @@
 	bool pause;
 	State state;
 	std::vector<jderobot::WalkerDataPtr> searches;
-        
+	std::vector<jderobot::StadisticsDataPtr> stadistics;	
+
+    	int index_search;
+	int index_stads;
+	bool newStads;
+
     };
 
 #endif /* defined(____shared__) */
