@@ -11,6 +11,9 @@
 
 #include "../shared.h"
 
+#define X_IDEAL 200
+#define Y_IDEAL 0
+
 class Control 
 {
 
@@ -22,12 +25,17 @@ class Control
 		virtual ~Control();
 		void update();
 		int connectGazebo();
+		void runn();
+	
+		float calculateFitness(jderobot::StadisticsDataPtr);
 
 	private:
 		//QMutex mutex;
 		Ice::CommunicatorPtr ic;
 		Shared* sm;
 		bool connected;
+
+		jderobot::WalkerPrx walk;
 };
 
 #endif 

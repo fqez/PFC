@@ -114,11 +114,11 @@ namespace gazebo {
 	this->rightshoulder.joint_pitch->SetParam("fmax",0, this->stiffness);
         this->rightshoulder.joint_roll->SetParam("fmax",0, this->stiffness);
         
-        double pitchSpeed =  5*(this->rightshoulder.motorsdata.tilt - this->rightshoulder.encoders.tilt) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        double pitchSpeed =  10*(this->rightshoulder.motorsdata.tilt - this->rightshoulder.encoders.tilt) + 0.1*(this->error_pitch - this->error_pitch_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
         
-        double rollSpeed =  5*(this->rightshoulder.motorsdata.roll - this->rightshoulder.encoders.roll) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        double rollSpeed =  10*(this->rightshoulder.motorsdata.roll - this->rightshoulder.encoders.roll) + 0.1*(this->error_pitch - this->error_pitch_ant);
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
         

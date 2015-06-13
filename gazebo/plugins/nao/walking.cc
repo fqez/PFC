@@ -39,6 +39,20 @@
 #include "poserightknee.h"
 #include "poserightshoulder.h"
 
+
+#define SHOULDER_PITCH_A 0.37
+#define SHOULDER_PITCH_S 90.5
+#define SHOULDER_PITCH_P 3.14
+#define SHOULDER_ROLL_A 0.05
+#define SHOULDER_ROLL_S -12.5
+#define SHOULDER_ROLL_P 0
+#define ELBOW_YAW_A 0.2
+#define ELBOW_YAW_S 75
+#define ELBOW_YAW_P 3.14
+#define ELBOW_ROLL_A 0.22
+#define ELBOW_ROLL_S 31
+#define ELBOW_ROLL_P 0
+
 #define HIP_ROLL_A 0.2
 #define HIP_ROLL_S 1
 #define HIP_ROLL_P 1.047 /* PI/3*/
@@ -47,7 +61,7 @@
 #define ANKLE_ROLL_A 0.23
 #define ANKLE_ROLL_S -2.9
 #define ANKLE_ROLL_P 2.0943	/*2pi/3*/
-#define BASE_PHASE 0   //20	/*Right hip pitch phase, all the other phases depend on this one*/
+#define BASE_PHASE 0   // 60/80	/*Right hip pitch phase, all the other phases depend on this one*/
 
 namespace gazebo {
     GZ_REGISTER_MODEL_PLUGIN(Walking);
@@ -85,7 +99,7 @@ namespace gazebo {
     class WalkerI : virtual public jderobot::Walker {
     public:
 
-		WalkerI(gazebo::Walking* walking) : walkerData(new jderobot::WalkerData()) {
+		WalkerI(gazebo::Walking* walking) : walkerData(new jderobot::WalkerData()), stadistics(new jderobot::StadisticsData()) {
 			this->walking = walking;	
 		}
 
@@ -93,9 +107,9 @@ namespace gazebo {
 
 		void sleep(unsigned long milisec) {
 		
-		//unsigned long milisec = 3000L;
-		struct timespec req={0};
-	   	time_t sec=(int)(milisec/1000);
+			//unsigned long milisec = 3000L;
+			struct timespec req={0};
+		   	time_t sec=(int)(milisec/1000);
 	    	milisec=milisec-(sec*1000);
 	    	req.tv_sec=sec;
 	    	req.tv_nsec=milisec*1000000L;
@@ -104,10 +118,169 @@ namespace gazebo {
 	    }
 
 		void resetWorld() {
+
+			//right leg orders
+			poseRH->righthip.motorsdata.tilt = 0.0000000;
+			poseRH->righthip.motorsdata.roll = 0.0000000;
+			poseRH->righthip.motorsdata.pan = 0.0000000;
+			poseRK->rightknee.motorsdata.tilt = 0.0000000;
+			poseRA->rightankle.motorsdata.tilt = 0.0000000;
+			poseRA->rightankle.motorsdata.roll = 0.0000000;
+
+			//left leg orders
+			poseLH->lefthip.motorsdata.tilt = 0.0000000;
+			poseLH->lefthip.motorsdata.roll = 0.0000000;
+			poseLH->lefthip.motorsdata.pan = 0.0000000;
+			poseLK->leftknee.motorsdata.tilt = 0.0000000;
+			poseLA->leftankle.motorsdata.tilt = 0.0000000;
+			poseLA->leftankle.motorsdata.roll = 0.0000000;
+
+			//rigth arm orders
+			poseRS->rightshoulder.motorsdata.tilt = 0.0000000;
+			poseRS->rightshoulder.motorsdata.roll = 0.0000000;
+			poseRE->rightelbow.motorsdata.roll = 0.0000000;
+			poseRE->rightelbow.motorsdata.pan = 0.0000000;
+	
+			//left arm orders
+			poseLS->leftshoulder.motorsdata.tilt = 0.0000000;
+			poseLS->leftshoulder.motorsdata.roll = 0.0000000;
+			poseLE->leftelbow.motorsdata.roll = 0.0000000;
+			poseLE->leftelbow.motorsdata.pan = 0.0000000;
+
+			//Aqui reseteamos el mundo.
+		  	gazebo::physics::WorldPtr world = this->walking->getModel()->GetWorld();
+		  	world->Reset();
+		}
+
+		math::Pose nao_position() {
+
+			gazebo::physics::ModelPtr model = this->walking->getModel();
+			return model->GetWorldPose();
+		}
+
+		bool hasFallen() {
+			return (nao_position().pos.z < 0.15) ? true : false;
+		}
+
+		float simTime() {
+			common::Time t = this->walking->getModel()->GetWorld()->GetRealTime();  //Tiempo en segundos
+	    	return t.Float();
+		}
+
+		void emptyVectors() {
+
+			std::cout << "en empty!!" << std::endl;
+
+			//right leg positions	
+			positions_right_hip_pitch.clear();
+			positions_right_hip_roll.clear();
+			positions_right_knee_pitch.clear();
+			positions_right_ankle_pitch.clear();
+			positions_right_ankle_roll.clear();
 		
-			  std::cout << "en reload" << std::endl;
-			  gazebo::physics::WorldPtr world = this->walking->getModel()->GetWorld();
-			  world->Reset();
+			//left leg positions
+			positions_left_hip_pitch.clear();
+			positions_left_hip_roll.clear();
+			positions_left_knee_pitch.clear();
+			positions_left_ankle_pitch.clear();
+			positions_left_ankle_roll.clear();
+
+			//right arm positions
+			positions_right_shoulder_pitch.clear();
+			positions_right_shoulder_roll.clear();
+			positions_right_elbow_roll.clear();
+			positions_right_elbow_yaw.clear();
+		
+			//left arm positions
+			positions_left_shoulder_pitch.clear();
+			positions_left_shoulder_roll.clear();
+			positions_left_elbow_roll.clear();
+			positions_left_elbow_yaw.clear();
+
+			//right leg positions	
+			positions_right_hip_pitch.resize(0);
+			positions_right_hip_roll.resize(0);
+			positions_right_knee_pitch.resize(0);
+			positions_right_ankle_pitch.resize(0);
+			positions_right_ankle_roll.resize(0);
+		
+			//left leg positions
+			positions_left_hip_pitch.resize(0);
+			positions_left_hip_roll.resize(0);
+			positions_left_knee_pitch.resize(0);
+			positions_left_ankle_pitch.resize(0);
+			positions_left_ankle_roll.resize(0);
+
+			//right arm positions
+			positions_right_shoulder_pitch.resize(0);
+			positions_right_shoulder_roll.resize(0);
+			positions_right_elbow_roll.resize(0);
+			positions_right_elbow_yaw.resize(0);
+		
+			//left arm positions
+			positions_left_shoulder_pitch.resize(0);
+			positions_left_shoulder_roll.resize(0);
+			positions_left_elbow_roll.resize(0);
+			positions_left_elbow_yaw.resize(0);
+
+			{
+				//right leg positions	
+				std::vector<double> temp_positions_right_hip_pitch;
+				std::vector<double> temp_positions_right_hip_roll;
+				std::vector<double> temp_positions_right_knee_pitch;
+				std::vector<double> temp_positions_right_ankle_pitch;
+				std::vector<double> temp_positions_right_ankle_roll;
+		
+				//left leg positions
+				std::vector<double> temp_positions_left_hip_pitch;
+				std::vector<double> temp_positions_left_hip_roll;
+				std::vector<double> temp_positions_left_knee_pitch;
+				std::vector<double> temp_positions_left_ankle_pitch;
+				std::vector<double> temp_positions_left_ankle_roll;
+
+				//right arm positions
+				std::vector<double> temp_positions_right_shoulder_pitch;
+				std::vector<double> temp_positions_right_shoulder_roll;
+				std::vector<double> temp_positions_right_elbow_roll;
+				std::vector<double> temp_positions_right_elbow_yaw;
+		
+				//left arm positions
+				std::vector<double> temp_positions_left_shoulder_pitch;
+				std::vector<double> temp_positions_left_shoulder_roll;
+				std::vector<double> temp_positions_left_elbow_roll;
+				std::vector<double> temp_positions_left_elbow_yaw;
+
+				//right leg positions	
+				positions_right_hip_pitch.swap(temp_positions_right_hip_pitch);
+				positions_right_hip_roll.swap(temp_positions_right_hip_roll);
+				positions_right_knee_pitch.swap(temp_positions_right_knee_pitch);
+				positions_right_ankle_pitch.swap(temp_positions_right_ankle_pitch);
+				positions_right_ankle_roll.swap(temp_positions_right_ankle_roll);
+		
+				//left leg positions
+				positions_left_hip_pitch.swap(temp_positions_left_hip_pitch);
+				positions_left_hip_roll.swap(temp_positions_left_hip_roll);
+				positions_left_knee_pitch.swap(temp_positions_left_knee_pitch);
+				positions_left_ankle_pitch.swap(temp_positions_left_ankle_pitch);
+				positions_left_ankle_roll.swap(temp_positions_left_ankle_roll);
+
+				//right arm positions
+				positions_right_shoulder_pitch.swap(temp_positions_right_shoulder_pitch);
+				positions_right_shoulder_roll.swap(temp_positions_right_shoulder_roll);
+				positions_right_elbow_roll.swap(temp_positions_right_elbow_roll);
+				positions_right_elbow_yaw.swap(temp_positions_right_elbow_yaw);
+		
+				//left arm positions
+				positions_left_shoulder_pitch.swap(temp_positions_left_shoulder_pitch);
+				positions_left_shoulder_roll.swap(temp_positions_left_shoulder_roll);
+				positions_left_elbow_roll.swap(temp_positions_left_elbow_roll);
+				positions_left_elbow_yaw.swap(temp_positions_left_elbow_yaw);
+			}
+		}
+
+		bool condition() {
+//std::cout << "fallen: " << hasFallen() << " simTime: " << (simTime() > 6.0) << " result: " << ((hasFallen()) || (simTime() > 6.0)) << std::endl;
+			return ((hasFallen()) || (simTime() > 6.0));
 		}
 
 		float hip_pitch_val(float frequency, float time, float amplitude, float shift, float phase) {
@@ -163,7 +336,7 @@ namespace gazebo {
 
 		}
 
-		float ankle_pitch_val (float frequency, float time, float amplitude, float shift, float phase) {
+		float ankle_pitch_val(float frequency, float time, float amplitude, float shift, float phase) {
 
 
 			float x;
@@ -194,17 +367,28 @@ namespace gazebo {
 			float phase;
 
 			float result;
+
+			float r_phase, l_phase;
 			
 			time = 0;
 			moment = frequency/pos;
-			phase = BASE_PHASE;
+			r_phase = BASE_PHASE;
 
-			std::cout << "hip pitch resutls" << std::endl;
-			for (int i = 0; i < 50; i++) {
+			//std::cout << "hip pitch resutls" << std::endl;
+			for (int i = 0; i < pos; i++) {
 				time = time + moment;
-				result = hip_pitch_val(frequency, time, amplitude, shift, phase);
+				result = hip_pitch_val(frequency, time, amplitude, shift, r_phase);
 				positions_right_hip_pitch.push_back(result);
-				std::cout << result << std::endl;
+				//std::cout << result << std::endl;
+			}
+			time = 0;
+			l_phase = M_PI + r_phase;
+			//std::cout << "hip pitch resutls left" << std::endl;
+			for (int i = 0; i < pos; i++) {
+				time = time + moment;
+				result = hip_pitch_val(frequency, time, amplitude, shift, l_phase);
+				positions_left_hip_pitch.push_back(result);
+				//std::cout << result << std::endl;
 			}
 
 
@@ -225,33 +409,23 @@ namespace gazebo {
 			moment = frequency/pos;
 			freq = (float)2*M_PI/(frequency);
 
-			std::cout << "right hip roll" << std::endl;
-			for (int i = 0; i < 50; i++) {
+			//std::cout << "right hip roll" << std::endl;
+			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = amplitude*sin((freq*(time))+phase)+shift;
 				positions_right_hip_roll.push_back(result);
-				std::cout << result << std::endl;
+				//std::cout << result << std::endl;
+			}
+			time = 0;
+			shift = shift - 1;
+			//std::cout << "right hip roll left" << std::endl;
+			for (int i = 0; i < pos; i++) {
+				time = time + moment;
+				result = amplitude*sin((freq*(time))+phase)+shift;
+				positions_left_hip_roll.push_back(result);
+				//std::cout << result << std::endl;
 			}
 
-
-/*			amplitude=HIP_ROLL_A*r_amplitude;
-			shift= HIP_ROLL_S;
-			phase= r_hip_pitch_phase + HIP_ROLL_P;
-			printf("valor de phase: %f\n",phase);
-			pos_time= frequency/n_pos;
-			my_frequency= (float)2*PI/(frequency);
-			time=0;
-			for (recorrido=m->inicio;recorrido!=NULL;recorrido=recorrido->siguiente){
-				time=time+pos_time;
-				recorrido->pos.right_hip.roll=amplitude*sin((my_frequency*(time))+phase)+shift;
-			}
-			time=0;
-			shift=shift-1;
-			for (recorrido=m->inicio;recorrido!=NULL;recorrido=recorrido->siguiente){
-				time=time+pos_time;
-				recorrido->pos.left_hip.roll=(amplitude*sin((my_frequency*(time))+phase)+shift);
-			}
-*/
 		}
 
 		void knee_pitch_value(float frequency, float amplitude, float phase, float shift, int pos) {
@@ -260,23 +434,31 @@ namespace gazebo {
 			float moment;
 
 			float result;
+			float r_phase, l_phase;
 			
 
 			time = 0;
 			moment = frequency/pos;
-			phase = BASE_PHASE + KNEE_PITCH_P + phase;
+			r_phase = BASE_PHASE + KNEE_PITCH_P + phase;
 
-			std::cout << "knee pitch results" << std::endl;
-			for (int i = 0; i < 50; i++) {
+			//std::cout << "knee pitch results" << std::endl;
+			//right knee positions
+			for (int i = 0; i < pos; i++) {
 				time = time + moment;
-				result = knee_pitch_val(frequency, time, amplitude, shift, phase);
+				result = knee_pitch_val(frequency, time, amplitude, shift, r_phase);
 				positions_right_knee_pitch.push_back(result);
-				std::cout << result << std::endl;
+				//std::cout << result << std::endl;
 			}
-						
+			//std::cout << "knee pitch results left" << std::endl;
 			//left knee positions
-			
-
+			time = 0;
+			l_phase = 2*M_PI + phase;
+			for (int i = 0; i < pos; i++) {
+				time = time + moment;
+				result = knee_pitch_val(frequency, time, amplitude, shift, l_phase);
+				positions_left_knee_pitch.push_back(result);
+				//std::cout << result << std::endl;
+			}
 		}
 
 		void ankle_pitch_value(float frequency, float amplitude, float phase, float shift, int pos) {
@@ -284,17 +466,27 @@ namespace gazebo {
 			float time, moment;
 
 			float result;
+			float r_phase, l_phase;
 
 			time = 0;
 			moment = frequency/pos;
-			phase = BASE_PHASE + ANKLE_PITCH_P + phase;
+			r_phase = BASE_PHASE + ANKLE_PITCH_P + phase;
 
-			std::cout << "ankle pitch values" << std::endl;
-			for(int i = 0; i < 50; i++) {
+			//std::cout << "ankle pitch values" << std::endl;
+			for(int i = 0; i < pos; i++) {
 				time = time + moment;
-				result = ankle_pitch_val(frequency, time, amplitude, shift, phase);
+				result = ankle_pitch_val(frequency, time, amplitude, shift, r_phase);
 				positions_right_ankle_pitch.push_back(result);
-				std::cout << result << std::endl;
+				//std::cout << result << std::endl;
+			}
+			time = 0;
+			l_phase = M_PI + r_phase;
+			//std::cout << "ankle pitch values left" << std::endl;
+			for(int i = 0; i < pos; i++) {
+				time = time + moment;
+				result = ankle_pitch_val(frequency, time, amplitude, shift, l_phase);
+				positions_left_ankle_pitch.push_back(result);
+				//std::cout << result << std::endl;
 			}
 
 		}
@@ -314,32 +506,136 @@ namespace gazebo {
 			moment = frequency/pos;
 			freq = (float)2*M_PI/(frequency);
 			
-			std::cout << "ankle roll results" << std::endl;
-			for (int i = 0; i < 50; i++) {
+			//std::cout << "ankle roll results" << std::endl;
+			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = amplitude*sin((freq*(time))+phase)+shift;
 				positions_right_ankle_roll.push_back(result);
-				std::cout << result << std::endl;
+				//std::cout << result << std::endl;
 			}
+			time = 0;
+			shift = shift + 5;
+			//std::cout << "ankle roll results left" << std::endl;
+			for (int i = 0; i < pos; i++) {
+				time = time + moment;
+				result = amplitude*sin((freq*(time))+phase)+shift;
+				positions_left_ankle_roll.push_back(result);
+				//std::cout << result << std::endl;
+			}
+		}
 
-/*
-			amplitude=ANKLE_ROLL_A*r_amplitude;
-			shift= ANKLE_ROLL_S;
-			phase= r_hip_pitch_phase - ANKLE_ROLL_P;
-			pos_time= frequency/n_pos;
-			my_frequency= (float)2*PI/(frequency);
+		void shoulder_pitch_value(float frequency, float amplitude_arms, int pos) {
+			float moment;
+			float time;
+			float freq;
+			float phase, shift,amplitude;
+			
+			float result;
+
+			phase=BASE_PHASE + SHOULDER_PITCH_P;
+			shift=SHOULDER_PITCH_S;
+			amplitude=SHOULDER_PITCH_A*amplitude_arms;
+			moment = frequency/pos;
+			freq = (float)2*M_PI/(frequency);
 			time=0;
-			for (recorrido=m->inicio;recorrido!=NULL;recorrido=recorrido->siguiente){
-				time=time+pos_time;
-				recorrido->pos.right_ankle.roll=amplitude*sin((my_frequency*(time))+phase)+shift;
+			//std::cout << "right shoulder pitch" << std::endl;
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result =amplitude*sin((freq*(time))+phase)+shift;
+				positions_right_shoulder_pitch.push_back(result);
+				//std::cout << result << std::endl;
 			}
+			phase=phase+(M_PI);
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result=amplitude*sin((freq*(time))+phase)+shift;
+				positions_left_shoulder_pitch.push_back(result);
+			}
+		}
+
+		void shoulder_roll_value(float frequency, float amplitude_arms, int pos) {
+			float moment;
+			float time;
+			float freq;
+			float phase, shift,amplitude;
+			
+			float result;
+
+			phase=BASE_PHASE + SHOULDER_ROLL_P;
+			shift=SHOULDER_ROLL_S;
+			amplitude=SHOULDER_ROLL_A*amplitude_arms;
+			moment = frequency/pos;
+			freq = (float)2*M_PI/(frequency);
 			time=0;
-			shift=shift+5;
-			for (recorrido=m->inicio;recorrido!=NULL;recorrido=recorrido->siguiente){
-				time=time+pos_time;
-				recorrido->pos.left_ankle.roll=(amplitude*sin((my_frequency*(time))+phase)+shift);
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result =amplitude*sin((freq*(time))+phase)+shift;
+				positions_right_shoulder_roll.push_back(result);
+				//std::cout << result << std::endl;
 			}
-*/
+			time = 0;
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result=-(amplitude*sin((freq*(time))+phase)+shift);
+				positions_left_shoulder_roll.push_back(result);
+			}
+	
+		}
+
+		void elbow_roll_value(float frequency, float amplitude_arms, int pos){
+			float moment;
+			float time;
+			float freq;
+			float phase, shift,amplitude;
+			
+			float result;
+
+			phase=BASE_PHASE + ELBOW_ROLL_P;
+			shift=ELBOW_ROLL_S;
+			amplitude=ELBOW_ROLL_A*amplitude_arms;
+			moment = frequency/pos;
+			freq = (float)2*M_PI/(frequency);
+			time=0;
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result =amplitude*sin((freq*(time))+phase)+shift;
+				positions_right_elbow_roll.push_back(result);
+				//std::cout << result << std::endl;
+			}
+			time = 0;
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result=-(amplitude*sin((freq*(time))+phase)+shift);
+				positions_left_elbow_roll.push_back(result);
+			}
+		}
+
+		void elbow_yaw_value(float frequency, float amplitude_arms, int pos){
+			float moment;
+			float time;
+			float freq;
+			float phase, shift,amplitude;
+			
+			float result;
+
+			phase=BASE_PHASE + ELBOW_YAW_P;
+			shift=ELBOW_YAW_S;
+			amplitude=ELBOW_YAW_A*amplitude_arms;
+			moment = frequency/pos;
+			freq = (float)2*M_PI/(frequency);
+			time=0;
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result =amplitude*sin((freq*(time))+phase)+shift;
+				positions_right_elbow_yaw.push_back(result);
+				//std::cout << result << std::endl;
+			}
+			time = 0;
+			for (int i = 0; i < pos; i++){
+				time=time+moment;
+				result=-(amplitude*sin((freq*(time))+phase)+shift);
+				positions_left_elbow_yaw.push_back(result);
+			}
 		}
 	
 		virtual Ice::Int stopWalk (const Ice::Current&) {
@@ -349,7 +645,7 @@ namespace gazebo {
 		virtual Ice::Int setParams(const jderobot::WalkerDataPtr&  walkerData,
 		    						     const Ice::Current&) {
 
-			std::cout << "en setParams" << std::endl;
+			//std::cout << "en setParams" << std::endl;
 
 		         // I should check the value of h, in case this is 0 and therefore
 		         //    the point is in the inifnity
@@ -365,27 +661,30 @@ namespace gazebo {
 			walking->my_params.ankle_amplitude = walkerData->param7;	
 			walking->my_params.ankle_phase = walkerData->param8;	
 			walking->my_params.ankle_shift = walkerData->param9;	
-			walking->my_params.balance = 20.0000; //walkerData->param10;
+			walking->my_params.balance = walkerData->param10;
+
+			int n_pos = 18;
+			float arms_amplitude = 50.0;
 
 			//yaw de la cadera fijo a 0. El balance se utiliza para calcular los roll.
 			// 18 (pos) es el numero de valores que va a tener el vector. divide la onda completa en 18 valores. El for para obtener los valores vale con 18
 			// iteraciones en este caso. A mayor numero, en mas valores divides la onda.
-			hip_pitch_value(walking->my_params.w, walking->my_params.hip_amplitude, walking->my_params.hip_shift, 18);
-			hip_roll_value(walking->my_params.w, walking->my_params.balance, 18);
-			knee_pitch_value(walking->my_params.w, walking->my_params.knee_amplitude, walking->my_params.knee_phase, walking->my_params.knee_shift, 18);
-			ankle_pitch_value(walking->my_params.w, walking->my_params.ankle_amplitude, walking->my_params.ankle_phase, walking->my_params.ankle_shift, 18);
-			ankle_roll_value(walking->my_params.w, walking->my_params.balance, 18);	
+	
+			//Legs
+			hip_pitch_value(walking->my_params.w, walking->my_params.hip_amplitude, walking->my_params.hip_shift, n_pos);
+			hip_roll_value(walking->my_params.w, walking->my_params.balance, n_pos);
+			knee_pitch_value(walking->my_params.w, walking->my_params.knee_amplitude, walking->my_params.knee_phase, walking->my_params.knee_shift, n_pos);
+			ankle_pitch_value(walking->my_params.w, walking->my_params.ankle_amplitude, walking->my_params.ankle_phase, walking->my_params.ankle_shift, n_pos);
+			ankle_roll_value(walking->my_params.w, walking->my_params.balance, n_pos);
 
-/*std::cout << "param1: " << walkerData->param1 << std::endl;
-std::cout << "param2: " << walkerData->param2 << std::endl;
-std::cout << "param3: " << walkerData->param3 << std::endl;
-std::cout << "param4: " << walkerData->param4 << std::endl;
-std::cout << "param5: " << walkerData->param5 << std::endl;
-std::cout << "param6: " << walkerData->param6 << std::endl;
-std::cout << "param7: " << walkerData->param7 << std::endl;
-std::cout << "param8: " << walkerData->param8 << std::endl;
-std::cout << "param9: " << walkerData->param9 << std::endl;
-std::cout << "param10: " << walkerData->param10 << std::endl;*/
+
+			//Arms
+			shoulder_pitch_value(walking->my_params.w, arms_amplitude, n_pos);
+			shoulder_roll_value(walking->my_params.w, arms_amplitude, n_pos);
+			elbow_roll_value(walking->my_params.w, arms_amplitude, n_pos);
+			elbow_yaw_value(walking->my_params.w, arms_amplitude, n_pos);	
+
+
 
 			pthread_mutex_unlock(&walking->mutex2);
 
@@ -393,30 +692,109 @@ std::cout << "param10: " << walkerData->param10 << std::endl;*/
 		    return 0;
 		}
 
+		virtual jderobot::StadisticsDataPtr getStadistics (const Ice::Current&) {
+
+			return stadistics;
+		}
+
 		virtual Ice::Int startWalk (const Ice::Current&) {
 			
-			std::cout << "en startWalk" << std::endl;
+			std::cout << "en startWalk2" << std::endl;
+/*std::cout << "elmentos en Rhip pitch vector " << positions_right_hip_pitch.size() << " capacity: " << positions_right_hip_pitch.capacity() << std::endl;
+std::cout << "elmentos en Rhip roll vector " << positions_right_hip_roll.size() << " capacity: " << positions_right_hip_roll.capacity() << std::endl;
+std::cout << "elmentos en Rknee pitch vector " << positions_right_knee_pitch.size() << " capacity: " << positions_right_knee_pitch.capacity() << std::endl;
+std::cout << "elmentos en Rankle pitch vector " << positions_right_ankle_pitch.size() << " capacity: " << positions_right_ankle_pitch.capacity() << std::endl;
+std::cout << "elmentos en Rankle roll vector " << positions_right_ankle_roll.size() << " capacity: " << positions_right_ankle_roll.capacity() << std::endl;
+
+std::cout << "elmentos en Lhip pitch vector " << positions_left_hip_pitch.size() << " capacity: " << positions_left_hip_pitch.capacity() << std::endl;
+std::cout << "elmentos en Lhip roll vector " << positions_left_hip_roll.size() << " capacity: " << positions_left_hip_roll.capacity() << std::endl;
+std::cout << "elmentos en Lknee pitch vector " << positions_left_knee_pitch.size() << " capacity: " << positions_left_knee_pitch.capacity() << std::endl;
+std::cout << "elmentos en Lankle pitch vector " << positions_left_ankle_pitch.size() << " capacity: " << positions_left_ankle_pitch.capacity() << std::endl;
+std::cout << "elmentos en Lankle roll vector " << positions_left_ankle_roll.size() << " capacity: " << positions_left_ankle_roll.capacity() << std::endl;
+
+std::cout << "elmentos en Rshoulder pitch vector " << positions_right_shoulder_pitch.size() << " capacity: " << positions_right_shoulder_pitch.capacity() << std::endl;
+std::cout << "elmentos en Rshoulder roll vector " << positions_right_shoulder_roll.size() << " capacity: " << positions_right_shoulder_roll.capacity() << std::endl;
+std::cout << "elmentos en Relbow roll vector " << positions_right_elbow_roll.size() << " capacity: " << positions_right_elbow_roll.capacity() << std::endl;
+std::cout << "elmentos en Relbow yaw vector " << positions_right_elbow_yaw.size() << " capacity: " << positions_right_elbow_yaw.capacity() << std::endl;
 
 
-
+std::cout << "elmentos en Lshoulder pitch vector " << positions_left_shoulder_pitch.size() << " capacity: " << positions_left_shoulder_pitch.capacity() << std::endl;
+std::cout << "elmentos en Lshoulder roll vector " << positions_left_shoulder_roll.size() << " capacity: " << positions_left_shoulder_roll.capacity() << std::endl;
+std::cout << "elmentos en Lelbow roll vector " << positions_left_elbow_roll.size() << " capacity: " << positions_left_elbow_roll.capacity() << std::endl;
+std::cout << "elmentos en Lelbow yaw vector " << positions_left_elbow_yaw.size() << " capacity: " << positions_left_elbow_yaw.capacity() << std::endl;*/
 			try {
-	
-			//AQUI VA EL GENERADOR DE ONDA DE LA CAMINATA PARAMETRIZADA!!!!!
-			//GENERAR LOS VALORES PARA TODAS LAS ARTICULACIONES Y COMANDAR EL ROBOT MEDIANTE LOS PUNTEROS A DICHAS ARTICS.
+//sleep(2000);
+				resetWorld();
 		
-			while (true) {
+				stadistics->x0 = nao_position().pos.x * 100.0;
+				stadistics->y0 = nao_position().pos.y * 100.0;
+				stadistics->z0 = nao_position().pos.z * 100.0;
 
-				
-				for (int i = 0; i < 50; i++) { 
+				float cont = 0;
+				float error = 0.0;
+				float pos_ant_x = 0.0;
+				float pos_ant_y = 0.0;
+				float pos_x = 0.0;
+				float pos_y = 0.0;
+				while (!condition()) {  //condiciones: que no hayan pasado 6 segundos de simulacion y que el robot no haya caido
 					
-					poseRK->rightknee.motorsdata.tilt = positions_right_knee_pitch[i]*M_PI/180;
-					sleep(3000);
+					pos_x = nao_position().pos.x * 100.0;
+					pos_y = nao_position().pos.y * 100.0;
+
+					error = error + sqrt( pow((pos_x - pos_ant_x),2) + pow((pos_y - pos_ant_y),2) );
+					cont = cont + 1.0;
+
+					pos_ant_x = pos_x;
+					pos_ant_y = pos_y;
+					for (int i = 0; i < 18; i++) { 
+					
+						//right leg orders
+						poseRH->righthip.motorsdata.tilt = positions_right_hip_pitch[i]*M_PI/180;
+						poseRH->righthip.motorsdata.roll = positions_right_hip_roll[i]*M_PI/180;
+						poseRH->righthip.motorsdata.pan = 0.0000;
+						poseRK->rightknee.motorsdata.tilt = positions_right_knee_pitch[i]*M_PI/180;
+						poseRA->rightankle.motorsdata.tilt = positions_right_ankle_pitch[i]*M_PI/180;
+						poseRA->rightankle.motorsdata.roll = positions_right_ankle_roll[i]*M_PI/180;
+
+						//left leg orders
+						poseLH->lefthip.motorsdata.tilt = positions_left_hip_pitch[i]*M_PI/180;
+						poseLH->lefthip.motorsdata.roll = positions_left_hip_roll[i]*M_PI/180;
+						poseLH->lefthip.motorsdata.pan = 0.0000;
+						poseLK->leftknee.motorsdata.tilt = positions_left_knee_pitch[i]*M_PI/180;
+						poseLA->leftankle.motorsdata.tilt = positions_left_ankle_pitch[i]*M_PI/180;
+						poseLA->leftankle.motorsdata.roll = positions_left_ankle_roll[i]*M_PI/180;
+
+						//rigth arm orders
+						poseRS->rightshoulder.motorsdata.tilt = positions_right_shoulder_pitch[i]*M_PI/180;
+						poseRS->rightshoulder.motorsdata.roll = positions_right_shoulder_roll[i]*M_PI/180;
+						poseRE->rightelbow.motorsdata.roll = positions_right_elbow_roll[i]*M_PI/180;
+						poseRE->rightelbow.motorsdata.pan = positions_right_elbow_yaw[i]*M_PI/180;
+				
+						//left arm orders
+						poseLS->leftshoulder.motorsdata.tilt = positions_left_shoulder_pitch[i]*M_PI/180;
+						poseLS->leftshoulder.motorsdata.roll = positions_left_shoulder_roll[i]*M_PI/180;
+						poseLE->leftelbow.motorsdata.roll = positions_left_elbow_roll[i]*M_PI/180;
+						poseLE->leftelbow.motorsdata.pan = positions_left_elbow_yaw[i]*M_PI/180;
+
+						sleep(100);
+					}
 				}
+				
+				emptyVectors();
+				this->walking->getModel()->GetWorld()->SetPaused(true);
+				stadistics->x1 = nao_position().pos.x * 100.0;
+				stadistics->y1 = nao_position().pos.y * 100.0;
+				stadistics->z1 = nao_position().pos.z * 100.0;
+				stadistics->simTime = simTime();
+				stadistics->distanceX = std::abs(stadistics->x1 - stadistics->x0) * 100.0;
+				stadistics->distanceY = std::abs(stadistics->y1 - stadistics->y0) * 100.0;
+				stadistics->desviation = error / (cont * 1.0);
+				stadistics->fallen = hasFallen();
 
+				this->walking->getModel()->GetWorld()->SetPaused(false);					
 
-
-			}
-			
+				resetWorld();
+				return 0;
 
 			} catch (const Ice::Exception& e) {
 		            std::cerr << e << std::endl;
@@ -441,7 +819,22 @@ std::cout << "param10: " << walkerData->param10 << std::endl;*/
 		std::vector<double> positions_left_knee_pitch;
 		std::vector<double> positions_left_ankle_pitch;
 		std::vector<double> positions_left_ankle_roll;
+
+		//right arm positions
+		std::vector<double> positions_right_shoulder_pitch;
+		std::vector<double> positions_right_shoulder_roll;
+		std::vector<double> positions_right_elbow_roll;
+		std::vector<double> positions_right_elbow_yaw;
 		
+		//left arm positions
+		std::vector<double> positions_left_shoulder_pitch;
+		std::vector<double> positions_left_shoulder_roll;
+		std::vector<double> positions_left_elbow_roll;
+		std::vector<double> positions_left_elbow_yaw;
+
+		jderobot::StadisticsDataPtr stadistics;	
+
+
 	public:
 		gazebo::Walking* walking;
     };
