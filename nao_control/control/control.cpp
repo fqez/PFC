@@ -21,6 +21,26 @@ cont = 0;
 
 Control::~Control() {}
 
+
+void* gazeboThread2(void*) {
+
+    std::string command;
+
+//MEJORAR: EN LUGAR DE EJECUTAR GAZEBO, EJECUTAR GZSERVER Y ABRIR Y CERRAR EL GUI CON GZCLIENT CON EL BOTON DEL GUI
+//SERÁ NECESARIO UN HILO PARA MOSTRAR LA INTERFAZ.
+
+	//si la opcion de interfaz de gazebo esta activada
+	//if (true)
+	//	 command = "gazebo "+fileName;
+	//else
+		//si no queremos interfaz de gazebo
+		command = "gzserver tmp/nao.world";
+    int a = system(command.c_str());	//manejo de excepciones
+
+	std::cout << a << std::endl;
+    
+}
+
 int Control::connectGazebo() {
 
 std::cout << "aa" << std::endl;
@@ -119,11 +139,36 @@ std::cout << "has fallen: " << stads->fallen << std::endl;
 std::cout << "fitness: " << stads->fitness << std::endl;
 std::cout << "-----------------------------------" << std::endl;
 
+	
+		cont++;
+
+		if (cont == 50) {
+			system("killall gzserver");
+			system("killall gazebo");
+			sleep(5);
+			std::cout << "Abriendo gazebo!" << std::endl;
+		pthread_t t_gazebo;
+		pthread_create(&t_gazebo, NULL, &gazeboThread2, NULL);
+sleep(5);
+			cont = 0;
+
+std::cout << "bb" << std::endl;
+	walkprx = ic->propertyToProxy("walk.Walker.Proxy");
+	if (0 == walkprx)
+    	throw "Could not create proxy with pose3Dmotorstobilloder";
+	// Cast to encoders
+	walk = jderobot::WalkerPrx::checkedCast(walkprx);
+	if (0 == walk)
+    	throw "Invalid proxy tobilloder.Pose3DMotorsTobilloDer.Proxy";
+std::cout << "cc" << std::endl;
+		}
 
 	}
 
 
 }
+
+
 
 float Control::calculateFitness(jderobot::StadisticsDataPtr stads) {
 

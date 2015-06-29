@@ -314,7 +314,7 @@ Gui::Gui(Shared* shm)
 
 
 
-    this->setWindowTitle(QApplication::translate("this", "this", 0, QApplication::UnicodeUTF8));
+    this->setWindowTitle(QApplication::translate("this", "Nao Walking Component", 0, QApplication::UnicodeUTF8));
     actionOpen->setText(QApplication::translate("this", "Open", 0, QApplication::UnicodeUTF8));
     actionClose->setText(QApplication::translate("this", "Close", 0, QApplication::UnicodeUTF8));
     actionFile->setText(QApplication::translate("this", "File", 0, QApplication::UnicodeUTF8));
@@ -447,21 +447,8 @@ void Gui::updateThreadGui(){
 void* gazeboThread(void*) {
 
 	string fileName = "tmp/nao.world";
-    std::string command;
-
-//MEJORAR: EN LUGAR DE EJECUTAR GAZEBO, EJECUTAR GZSERVER Y ABRIR Y CERRAR EL GUI CON GZCLIENT CON EL BOTON DEL GUI
-//SERÁ NECESARIO UN HILO PARA MOSTRAR LA INTERFAZ.
-
-	//si la opcion de interfaz de gazebo esta activada
-	//if (true)
-	//	 command = "gazebo "+fileName;
-	//else
-		//si no queremos interfaz de gazebo
-		command = "gzserver "+fileName;
-    int a = system(command.c_str());	//manejo de excepciones
-
-	std::cout << a << std::endl;
-    
+	std::string command = "gzserver "+fileName;
+    	int a = system(command.c_str());	//manejo de excepciones    
 }
 
 void Gui::on_abrir_buttonpressed() {
