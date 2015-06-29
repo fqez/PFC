@@ -34,7 +34,7 @@
         <geometry>
           <mesh>
             <scale>0.1 0.1 0.1</scale>
-            <uri>model://nao_inet/meshes/V40/collision/HeadPitch.stl</uri>
+            <uri>model://nao_partial/meshes/V40/collision/HeadPitch.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -43,7 +43,7 @@
         <geometry>
           <mesh>
             <scale>0.1 0.1 0.1</scale>
-            <uri>model://nao_inet/meshes/V40/visual/HeadPitch.dae</uri>
+            <uri>model://nao_partial/meshes/V40/visual/HeadPitch.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -101,7 +101,7 @@
         <geometry>
           <mesh>
             <scale>0.1 0.1 0.1</scale>
-            <uri>model://nao_inet/meshes/V40/collision/HeadYaw.stl</uri>
+            <uri>model://nao_partial/meshes/V40/collision/HeadYaw.stl</uri>
           </mesh>
         </geometry>
       </collision>
@@ -110,7 +110,7 @@
         <geometry>
           <mesh>
             <scale>0.1 0.1 0.1</scale>
-            <uri>model://nao_inet/meshes/V40/visual/HeadYaw.dae</uri>
+            <uri>model://nao_partial/meshes/V40/visual/HeadYaw.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -180,7 +180,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/RShoulderPitch.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/RShoulderPitch.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -189,7 +189,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/RShoulderPitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/RShoulderPitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -245,7 +245,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/RShoulderRoll.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/RShoulderRoll.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -254,7 +254,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/RShoulderRoll.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/RShoulderRoll.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -349,7 +349,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/RElbowRoll.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/RElbowRoll.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -358,7 +358,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/RElbowRoll.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/RElbowRoll.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -414,7 +414,7 @@
         		<geometry>
         	  		<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/WristYaw.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/WristYaw.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -423,7 +423,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/WristYaw.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/WristYaw.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -497,7 +497,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LShoulderPitch.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LShoulderPitch.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -506,7 +506,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LShoulderPitch.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LShoulderPitch.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -562,7 +562,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LShoulderRoll.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LShoulderRoll.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -571,7 +571,7 @@
         		<geometry>
          	 		<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LShoulderRoll.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LShoulderRoll.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -666,7 +666,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/LElbowRoll.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/LElbowRoll.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -675,7 +675,7 @@
         		<geometry>
         			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/LElbowRoll.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/LElbowRoll.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -731,7 +731,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/collision/WristYaw.stl</uri>
+            			<uri>model://nao_partial/meshes/V40/collision/WristYaw.stl</uri>
           			</mesh>
         		</geometry>
       		</collision>
@@ -740,7 +740,7 @@
         		<geometry>
           			<mesh>
             			<scale>0.1 0.1 0.1</scale>
-            			<uri>model://nao_inet/meshes/V40/visual/WristYaw.dae</uri>
+            			<uri>model://nao_partial/meshes/V40/visual/WristYaw.dae</uri>
           			</mesh>
         		</geometry>
       		</visual>
@@ -948,7 +948,7 @@
       		<pose>0 -0.05 -0.085 0 -0 0</pose>
       		<inertial>
         		<pose>-0.01549 -0.00029 -0.00515 0 -0 0</pose>
-        		<mass>0.13053</mass>
+        		<mass>0.14053</mass>
         		<inertia>
           			<ixx>2.75865e-05</ixx>
           			<ixy>-1.919e-08</ixy>
@@ -1078,7 +1078,7 @@
       		<pose>0 -0.05 -0.185 0 -0 0</pose>
       		<inertial>
         		<pose>0.00453 -0.00225 -0.04936 0 -0 0</pose>
-        		<mass>0.29142</mass>
+        		<mass>0.30142</mass>
         		<inertia>
           			<ixx>0.00118283</ixx>
           			<ixy>-8.965e-07</ixy>
@@ -1121,7 +1121,6 @@
 		</link>
 <!--***********************************************************************-->			<!-- RIGHT ANKLE PITCH JOINT -->
 <joint name='RAnklePitch' type='revolute'>
-	<pose>0 0 0 0 0 0</pose>
 	<child>RAnklePitchLink</child>
  	<parent>RKneePitchLink</parent>
 	<axis>
@@ -1184,7 +1183,6 @@
 		</link>
 <!--***********************************************************************-->			<!-- RIGHT ANKLE ROLL JOINT -->
 <joint name='RAnkleRoll' type='revolute'>
-	<pose>0 0 0 0 0 0</pose>
 	<child>RAnkleRollLink</child>
 	<parent>RAnklePitchLink</parent>
 	<axis>
@@ -1196,7 +1194,7 @@
 			<velocity>4.16174</velocity>
 		</limit>
 		<dynamics>
-			<damping>0</damping>
+			<damping>1.0</damping>
 		</dynamics>
 	</axis>
 </joint>
@@ -1207,7 +1205,7 @@
       		<pose>0 -0.05 -0.2879 0 -0 0</pose>
       		<inertial>
         		<pose>0.02542 -0.0033 -0.03239 0 -0 0</pose>
-        		<mass>0.16184</mass>
+        		<mass>0.17184</mass>
 				<inertia>
 					<ixx>0.000269302</ixx>
 				  	<ixy>5.87505e-06</ixy>
@@ -1374,7 +1372,7 @@
       		<pose>0 0.05 -0.085 0 -0 0</pose>
       		<inertial>
         		<pose>-0.01549 0.00029 -0.00515 0 -0 0</pose>
-        		<mass>0.13053</mass>
+        		<mass>0.14053</mass>
         		<inertia>
           			<ixx>2.75835e-05</ixx>
           			<ixy>-2.233e-08</ixy>
@@ -1497,7 +1495,7 @@
 		    <pose>0 0.05 -0.185 0 -0 0</pose>
       		<inertial>
 		        <pose>0.00453 0.00225 -0.04936 0 -0 0</pose>
-		        <mass>0.29142</mass>
+		        <mass>0.30142</mass>
         		<inertia>
          			<ixx>0.00118208</ixx>
 			        <ixy>6.3362e-07</ixy>
@@ -1604,7 +1602,7 @@
           	<velocity>4.16174</velocity>
         </limit>
         <dynamics>
-          	<damping>0</damping>
+          	<damping>1.0</damping>
         </dynamics>
 	</axis>
 </joint>
@@ -1615,7 +1613,7 @@
       		<pose>0 0.05 -0.2879 0 -0 0</pose>
       		<inertial>
         		<pose>0.02542 0.0033 -0.03239 0 0 0</pose>
-        		<mass>0.16184</mass>
+        		<mass>0.17184</mass>
         		<inertia>
           			<ixx>0.000269442</ixx>
           			<ixy>-5.69572e-06</ixy>

@@ -100,7 +100,7 @@ jderobot::WalkerDataPtr Shared::getRandomSearch() {
 		int total = searches.size()-1;
 
 	  	srand(time(NULL));
-    	int rand = std::rand() % (total +1); // rand() return a number between ​0​ and RAND_MAX
+    		int rand = std::rand() % (total +1); 
 		this->index_search = rand;
 		jderobot::WalkerDataPtr data = this->searches[rand];
 		searches.erase(searches.begin()+rand);
@@ -138,8 +138,10 @@ jderobot::StadisticsDataPtr Shared::getStadFlag() {
 	if (this->newStads) {
 	
 		this->index_stads++;
+		this->newStads = false;
 
-			if((this->stadistics[index_stads]->fitness/11) > 10) {	//if fitness > 10% (no fallings)
+			//if((this->stadistics[index_stads]->fitness/11) > 10) {	//if fitness > 10% (no fallings)
+			if((this->stadistics[index_stads]->fallen) == 0) {
 				std::ofstream stads_file;
 				std::cout << "writing stadistics" << std::endl;
 				stads_file.open( "stadistics.txt", std::ofstream::app );

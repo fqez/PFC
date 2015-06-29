@@ -113,11 +113,11 @@ namespace gazebo {
 	this->error_pitch = this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt;
 	this->error_roll = this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll;
         
-        double pitchSpeed =  10*(this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        double pitchSpeed =  20*(this->leftshoulder.motorsdata.tilt - this->leftshoulder.encoders.tilt) + 0.1*(this->error_pitch - this->error_pitch_ant);
         //if ((std::abs(pitchSpeed) < 0.1) && (std::abs(pitchSpeed) > 0.001))
         //    pitchSpeed = 0.1;
         
-        double rollSpeed =  10*(this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll) + 0.1*(this->error_pitch - this->error_pitch_ant);
+        double rollSpeed =  20*(this->leftshoulder.motorsdata.roll - this->leftshoulder.encoders.roll) + 0.1*(this->error_pitch - this->error_pitch_ant);
         //if ((std::abs(rollSpeed) < 0.1) && (std::abs(rollSpeed) > 0.001))
         //    rollSpeed = 0.1;
         

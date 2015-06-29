@@ -61,7 +61,7 @@
 #define ANKLE_ROLL_A 0.23
 #define ANKLE_ROLL_S -2.9
 #define ANKLE_ROLL_P 2.0943	/*2pi/3*/
-#define BASE_PHASE 0   // 60/80	/*Right hip pitch phase, all the other phases depend on this one*/
+#define BASE_PHASE -1.5  /*Right hip pitch phase, all the other phases depend on this one*/
 
 namespace gazebo {
     GZ_REGISTER_MODEL_PLUGIN(Walking);
@@ -197,7 +197,7 @@ namespace gazebo {
 			positions_left_elbow_roll.clear();
 			positions_left_elbow_yaw.clear();
 
-			//right leg positions	
+			/*//right leg positions	
 			positions_right_hip_pitch.resize(0);
 			positions_right_hip_roll.resize(0);
 			positions_right_knee_pitch.resize(0);
@@ -275,12 +275,12 @@ namespace gazebo {
 				positions_left_shoulder_roll.swap(temp_positions_left_shoulder_roll);
 				positions_left_elbow_roll.swap(temp_positions_left_elbow_roll);
 				positions_left_elbow_yaw.swap(temp_positions_left_elbow_yaw);
-			}
+			}*/
 		}
 
 		bool condition() {
 //std::cout << "fallen: " << hasFallen() << " simTime: " << (simTime() > 6.0) << " result: " << ((hasFallen()) || (simTime() > 6.0)) << std::endl;
-			return ((hasFallen()) || (simTime() > 6.0));
+			return ((hasFallen()) || (simTime() > 7.0));
 		}
 
 		float hip_pitch_val(float frequency, float time, float amplitude, float shift, float phase) {
@@ -374,21 +374,21 @@ namespace gazebo {
 			moment = frequency/pos;
 			r_phase = BASE_PHASE;
 
-			//std::cout << "hip pitch resutls" << std::endl;
+			std::cout << "hip pitch resutls" << std::endl;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = hip_pitch_val(frequency, time, amplitude, shift, r_phase);
 				positions_right_hip_pitch.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 			time = 0;
 			l_phase = M_PI + r_phase;
-			//std::cout << "hip pitch resutls left" << std::endl;
+			std::cout << "hip pitch resutls left" << std::endl;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = hip_pitch_val(frequency, time, amplitude, shift, l_phase);
 				positions_left_hip_pitch.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 
 
@@ -409,21 +409,21 @@ namespace gazebo {
 			moment = frequency/pos;
 			freq = (float)2*M_PI/(frequency);
 
-			//std::cout << "right hip roll" << std::endl;
+			std::cout << "right hip roll" << std::endl;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = amplitude*sin((freq*(time))+phase)+shift;
 				positions_right_hip_roll.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 			time = 0;
 			shift = shift - 1;
-			//std::cout << "right hip roll left" << std::endl;
+			std::cout << "right hip roll left" << std::endl;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = amplitude*sin((freq*(time))+phase)+shift;
 				positions_left_hip_roll.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 
 		}
@@ -441,23 +441,23 @@ namespace gazebo {
 			moment = frequency/pos;
 			r_phase = BASE_PHASE + KNEE_PITCH_P + phase;
 
-			//std::cout << "knee pitch results" << std::endl;
+			std::cout << "knee pitch results" << std::endl;
 			//right knee positions
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = knee_pitch_val(frequency, time, amplitude, shift, r_phase);
 				positions_right_knee_pitch.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
-			//std::cout << "knee pitch results left" << std::endl;
+			std::cout << "knee pitch results left" << std::endl;
 			//left knee positions
 			time = 0;
-			l_phase = 2*M_PI + phase;
+			l_phase = 2*M_PI + r_phase;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = knee_pitch_val(frequency, time, amplitude, shift, l_phase);
 				positions_left_knee_pitch.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 		}
 
@@ -472,21 +472,21 @@ namespace gazebo {
 			moment = frequency/pos;
 			r_phase = BASE_PHASE + ANKLE_PITCH_P + phase;
 
-			//std::cout << "ankle pitch values" << std::endl;
+			std::cout << "ankle pitch values" << std::endl;
 			for(int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = ankle_pitch_val(frequency, time, amplitude, shift, r_phase);
 				positions_right_ankle_pitch.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 			time = 0;
 			l_phase = M_PI + r_phase;
-			//std::cout << "ankle pitch values left" << std::endl;
+			std::cout << "ankle pitch values left" << std::endl;
 			for(int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = ankle_pitch_val(frequency, time, amplitude, shift, l_phase);
 				positions_left_ankle_pitch.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 
 		}
@@ -506,21 +506,21 @@ namespace gazebo {
 			moment = frequency/pos;
 			freq = (float)2*M_PI/(frequency);
 			
-			//std::cout << "ankle roll results" << std::endl;
+			std::cout << "ankle roll results" << std::endl;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = amplitude*sin((freq*(time))+phase)+shift;
 				positions_right_ankle_roll.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 			time = 0;
 			shift = shift + 5;
-			//std::cout << "ankle roll results left" << std::endl;
+			std::cout << "ankle roll results left" << std::endl;
 			for (int i = 0; i < pos; i++) {
 				time = time + moment;
 				result = amplitude*sin((freq*(time))+phase)+shift;
 				positions_left_ankle_roll.push_back(result);
-				//std::cout << result << std::endl;
+				std::cout << result << std::endl;
 			}
 		}
 
@@ -653,18 +653,22 @@ namespace gazebo {
 			pthread_mutex_lock(&walking->mutex2);
 
 			walking->my_params.w = walkerData->param1;	
-			walking->my_params.hip_amplitude = walkerData->param2;	
-			walking->my_params.hip_shift = walkerData->param3;	
-			walking->my_params.knee_amplitude = walkerData->param4;	
-			walking->my_params.knee_phase = walkerData->param5;	
-			walking->my_params.knee_shift = walkerData->param6;	
-			walking->my_params.ankle_amplitude = walkerData->param7;	
-			walking->my_params.ankle_phase = walkerData->param8;	
-			walking->my_params.ankle_shift = walkerData->param9;	
-			walking->my_params.balance = walkerData->param10;
+walking->my_params.hip_amplitude = walkerData->param2;	
+walking->my_params.hip_shift = walkerData->param3;	
+walking->my_params.knee_amplitude = walkerData->param4;;	
+walking->my_params.knee_phase = walkerData->param5;	
+walking->my_params.knee_shift = 42.1;	
+walking->my_params.ankle_amplitude = 7.5;	
+walking->my_params.ankle_phase = walkerData->param8;	
+walking->my_params.ankle_shift = -21.4;	
+walking->my_params.balance = 38.29999;
 
 			int n_pos = 18;
 			float arms_amplitude = 50.0;
+
+			sleep_time = (walking->my_params.w / n_pos) * 1000;
+
+std::cout << "@@@@@@@@@@@@@@ " << sleep_time << std::endl;
 
 			//yaw de la cadera fijo a 0. El balance se utiliza para calcular los roll.
 			// 18 (pos) es el numero de valores que va a tener el vector. divide la onda completa en 18 valores. El for para obtener los valores vale con 18
@@ -699,7 +703,7 @@ namespace gazebo {
 
 		virtual Ice::Int startWalk (const Ice::Current&) {
 			
-			std::cout << "en startWalk2" << std::endl;
+			std::cout << "en startWalkv2" << std::endl;
 /*std::cout << "elmentos en Rhip pitch vector " << positions_right_hip_pitch.size() << " capacity: " << positions_right_hip_pitch.capacity() << std::endl;
 std::cout << "elmentos en Rhip roll vector " << positions_right_hip_roll.size() << " capacity: " << positions_right_hip_roll.capacity() << std::endl;
 std::cout << "elmentos en Rknee pitch vector " << positions_right_knee_pitch.size() << " capacity: " << positions_right_knee_pitch.capacity() << std::endl;
@@ -736,6 +740,7 @@ std::cout << "elmentos en Lelbow yaw vector " << positions_left_elbow_yaw.size()
 				float pos_ant_y = 0.0;
 				float pos_x = 0.0;
 				float pos_y = 0.0;
+				
 				while (!condition()) {  //condiciones: que no hayan pasado 6 segundos de simulacion y que el robot no haya caido
 					
 					pos_x = nao_position().pos.x * 100.0;
@@ -776,7 +781,7 @@ std::cout << "elmentos en Lelbow yaw vector " << positions_left_elbow_yaw.size()
 						poseLE->leftelbow.motorsdata.roll = positions_left_elbow_roll[i]*M_PI/180;
 						poseLE->leftelbow.motorsdata.pan = positions_left_elbow_yaw[i]*M_PI/180;
 
-						sleep(100);
+						sleep(sleep_time);
 					}
 				}
 				
@@ -805,6 +810,8 @@ std::cout << "elmentos en Lelbow yaw vector " << positions_left_elbow_yaw.size()
 
 	private:
 		jderobot::WalkerDataPtr  walkerData;
+
+		int sleep_time;
 
 		//right leg positions	
 		std::vector<double> positions_right_hip_pitch;

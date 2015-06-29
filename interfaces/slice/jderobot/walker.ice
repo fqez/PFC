@@ -40,6 +40,24 @@ module jderobot{
 		float param10;
   	};
 
+	class StadisticsData
+	{
+		int id;
+		float x0;
+		float y0;
+		float z0;
+		float x1;
+		float y1;
+		float z1;
+		float simTime;
+		float distance;
+		float distanceX;
+		float distanceY;
+		double desviation;
+		int fallen;
+		float fitness;
+	};
+
 	/** 
    	* Interface to the walker activator.
    	*/
@@ -48,6 +66,7 @@ module jderobot{
 		int startWalk();
 		int stopWalk();
 		int setParams(WalkerData data);
+		StadisticsData getStadistics();
 	};
 
 
